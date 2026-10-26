@@ -69,12 +69,21 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 #vp{position:relative;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;box-shadow:0 3px 12px rgba(60,30,40,.16);touch-action:none}
 #cv{display:block;touch-action:none}
 #edt{position:absolute;z-index:4;margin:0;padding:0;border:0;outline:1.4px dashed rgba(201,87,122,.9);outline-offset:4px;background:transparent;resize:none;overflow:hidden;min-height:0;caret-color:currentColor;white-space:pre-wrap;box-sizing:content-box}
-.tabs{display:flex;border-bottom:1.5px solid var(--line2);flex:none}
-.tabs button{flex:1;border:0;background:none;font-size:14px;color:var(--faint);padding:11px 0;margin-bottom:-1.5px}
+.tabs{display:flex;border-bottom:1.5px solid var(--line2);flex:none;overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.top>*{white-space:nowrap;flex:none}
+.tabs button{flex:1 0 auto;border:0;background:none;font-size:14px;color:var(--faint);padding:11px 6px;margin-bottom:-1.5px;white-space:nowrap}
 .tabs button.on{color:var(--ac);font-weight:600;box-shadow:inset 0 -2.5px var(--ac)}
 .scr{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
 .scr::-webkit-scrollbar{display:none}
-.panel{display:flex;flex-direction:column;gap:13px;padding:12px 0 max(24px,env(safe-area-inset-bottom,0px))}
+.panel{display:flex;flex-direction:column;gap:9px;padding:9px 0 max(16px,env(safe-area-inset-bottom,0px))}
+.strip{display:flex;gap:8px;overflow-x:auto;padding:6px;margin:-6px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);padding-right:26px}
+.strip::-webkit-scrollbar{display:none}.strip>*{flex:none}
+.lab{font-size:12.5px;color:var(--deep);font-weight:600;white-space:nowrap;min-width:38px}
+.ft{border:0;background:none;padding:0;text-align:center;font-size:10.5px;color:#7A6070;width:54px}.ft canvas{width:54px;height:54px;display:block;border-radius:10px;border:2px solid transparent;box-sizing:border-box;margin-bottom:2px}.ft.on{color:var(--ac);font-weight:600}.ft.on canvas{border-color:var(--ac)}
+.tile{width:38px;height:38px}
+.pt{width:50px}.pt canvas{width:50px;height:50px}
+.tools{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}.tools button{border:1px solid #EFDCE2;background:#fff;border-radius:10px;padding:4px 0 3px;font-size:10.5px;color:#7A6070;display:flex;flex-direction:column;align-items:center}.tools b{font-size:15px;color:var(--deep);line-height:1.2}.tools .on{background:var(--soft);border-color:var(--ac2);color:var(--deep);font-weight:600}
+.igrid{display:grid;grid-template-rows:repeat(2,40px);grid-auto-flow:column;grid-auto-columns:40px;gap:6px;overflow-x:auto;padding:2px 26px 2px 2px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent)}.igrid::-webkit-scrollbar{display:none}
 .hc{font-size:12.5px;color:var(--deep);font-weight:600;margin-bottom:7px;white-space:nowrap}
 .hc::before{content:"♥";color:#EBA0B6;font-size:10px;margin-right:5px}
 .hc small{font-weight:400;color:var(--faint)}
@@ -116,8 +125,8 @@ input[type=range]{flex:1;min-width:0;accent-color:var(--ac)}
 .pt canvas{width:100%;aspect-ratio:1;display:block;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);margin-bottom:3px;border:2px solid transparent;box-sizing:border-box}
 .pt.on{color:var(--ac);font-weight:600}.pt.on canvas{border-color:var(--ac)}
 .fbs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
-.fb{border:1px solid #E9CDD5;background:#fff;border-radius:12px;padding:6px 0 5px;min-width:0;white-space:nowrap;overflow:hidden;font-size:10.5px!important;display:flex;flex-direction:column;align-items:center;font-size:11px;color:#7A6070}
-.fb b{font-size:22px;font-weight:inherit;line-height:1.25;color:var(--tx)}
+.fb{border:1px solid #E9CDD5;background:#fff;border-radius:12px;padding:4px 10px 4px;min-width:0;white-space:nowrap;font-size:10.5px!important;display:flex;flex-direction:column;align-items:center;font-size:11px;color:#7A6070}
+.fb b{font-size:19px;font-weight:inherit;line-height:1.25;color:var(--tx)}
 .fb.on{border:2px solid var(--ac);color:var(--ac);font-weight:600}
 textarea{width:100%;box-sizing:border-box;border:1px solid #E9CDD5;background:#fff;color:var(--tx);border-radius:12px;padding:10px 12px;font-family:inherit;font-size:16px;line-height:1.6;min-height:64px;resize:vertical}
 .tcs{display:flex;gap:6px;flex-wrap:wrap}.tc{border:1.5px solid var(--line);background:#fff;color:var(--deep);border-radius:999px;padding:6px 12px;font-size:13px;max-width:9em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.tc.on{background:var(--soft);border-color:var(--ac2);font-weight:600}.tc.add{border-style:dashed}.tact{margin-left:auto;display:flex;gap:6px}
@@ -193,7 +202,7 @@ const IC={
  ar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M10 12h10M6 18h14"/></svg>',
  aj:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>'};
 function fresh(){return {mode:'col',size:'4:5',n:4,k:0,gap:1,ph:[],sel:null,tab:'lay',frame:0,flt:{k:'none',s:1,ds:true},
-  bg:{t:'color',c:0,g:0,p:'줄노트',img:null,dim:0},seg:'basic',
+  bg:{t:'color',c:0,g:0,p:'줄노트',img:null,dim:0},seg:'color',icol:'#E58FA5',ttool:'font',
   texts:[],tsel:null,items:[],isel:null}}
 let S=fresh();
 
@@ -268,7 +277,8 @@ function effects(c,k,s,ds){const p=FP[k];if(!p||s<=0)return c;const w=c.width,h=
   if(p.lens)lens(x,c,w,h,s);if(p.hal)halation(x,c,w,h,p.hal*s);grain(x,w,h,p.grain*s);if(p.leak)leak(x,w,h,s);vignette(x,w,h,Math.min(.8,p.vig*s));if(k==='disp'&&ds)stamp(x,w,h);return c}
 const fstr=()=>{const r=S.flt.s;return r<=1?1-(1-r)*(1-r):r};
 function down(c,M){const s=Math.min(1,M/Math.max(c.width,c.height));if(s>=1)return c;const o=document.createElement('canvas');o.width=Math.round(c.width*s);o.height=Math.round(c.height*s);const x=o.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(c,0,0,o.width,o.height);return o}
-function fimg(p,full){const key=S.flt.k+':'+S.flt.s,src=full?p.base:(p.prev||(p.prev=down(p.base,900))),f=full?'fF':'fP';if(p[f+'k']!==key){p[f]=colorize(src,S.flt.k,fstr());p[f+'k']=key}return p[f]}
+const PREV=1400;
+function fimg(p,full){if(S.flt.k==='none')return p.base;const key=S.flt.k+':'+S.flt.s,src=full?p.base:(p.prev||(p.prev=down(p.base,PREV))),f=full?'fF':'fP';if(p[f+'k']!==key){p[f]=colorize(src,S.flt.k,fstr());p[f+'k']=key}return p[f]}
 
 /* ---------- 배경 ---------- */
 function hx(h){const n=parseInt(h.slice(1),16);return[n>>16,(n>>8)&255,n&255]}
@@ -353,7 +363,7 @@ function drawSel(ctx,W,H){const u=W/300;ctx.save();ctx.setLineDash([5*u,4*u]);ct
 /* ---------- 화면 크기 ---------- */
 const cv=$('cv'),cx=cv.getContext('2d');let VW=300,VH=375;
 function layout(){const [W,H]=SZ();const avail=$('stage').clientWidth-24;if(!window._H0)window._H0=window.innerHeight;
-  const maxH=Math.max(220,window._H0-54-20-44-205);VW=Math.min(avail,400,maxH*W/H);VH=VW*H/W;const d=window.devicePixelRatio||1;
+  const maxH=Math.max(220,window._H0-54-20-44-182);VW=Math.min(avail,400,maxH*W/H);VH=VW*H/W;const d=window.devicePixelRatio||1;
   cv.style.width=VW+'px';cv.style.height=VH+'px';$('vp').style.width=VW+'px';$('vp').style.height=VH+'px';cv.width=Math.round(VW*d);cv.height=Math.round(VH*d);draw();placeEd()}
 function draw(){const [W,H]=SZ();const k=cv.width/W;cx.setTransform(k,0,0,k,0,0);render(cx,W,H,true);if(typeof schedSave==='function')schedSave()}
 
@@ -413,102 +423,100 @@ function fdraw(){if(!S.ph.some(Boolean)){draw();return}busy(true,'필터 적용 
 $('file').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length||!target)return;
   const order=[target.i];if(target.multi)for(let j=0;j<S.n;j++)if(j!==target.i&&!S.ph[j])order.push(j);
   busy(true);let bad=0;
-  for(let q=0;q<fs.length&&q<order.length;q++){try{const base=await loadImg(fs[q]);S.ph[order[q]]={base,prev:down(base,900),z:1,ox:0,oy:0,fl:false}}catch(_){bad++}}
+  for(let q=0;q<fs.length&&q<order.length;q++){try{const base=await loadImg(fs[q]);S.ph[order[q]]={base,prev:down(base,PREV),z:1,ox:0,oy:0,fl:false}}catch(_){bad++}}
   busy(false);thumbSrc=null;S.sel=S.ph[order[0]]?order[0]:null;if(S.sel!=null&&S.tab==='lay'){S.tab='ph';tabs()}panel();layout();if(bad)toast('열 수 없는 사진이 있었어요')};
-$('bgfile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;busy(true);try{const base=await loadImg(f,2000);S.bg.img={base,prev:down(base,900)};Object.assign(S.bg,{t:'photo',ox:0,oy:0,z:1});S.seg='photo';thumbSrc=null}catch(_){toast('열 수 없는 사진이에요')}busy(false);panel();draw()};
+$('bgfile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;busy(true);try{const base=await loadImg(f,2000);S.bg.img={base,prev:down(base,PREV)};Object.assign(S.bg,{t:'photo',ox:0,oy:0,z:1});S.seg='photo';thumbSrc=null}catch(_){toast('열 수 없는 사진이에요')}busy(false);panel();draw()};
 
 /* ---------- 아래 칸 ---------- */
 function tabs(){[...$('tabs').children].forEach(b=>b.classList.toggle('on',b.dataset.t===S.tab))}
 $('tabs').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;if(S.editing)closeEd();S.tab=b.dataset.t;tabs();panel();draw();$('scr').scrollTop=0};
 function miniLay(c,n,k){const W=c.width,H=c.height,x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);cells(W,H,n,k,2).forEach(q=>{if(q.t==='pol'){x.strokeStyle='#eee';x.lineWidth=1;x.strokeRect(q.x-3,q.y-3,q.w+6,q.h+H*.13+3)}x.fillStyle='#F7C6D3';path(x,q);x.fill();if(q.t==='circ'||q.t==='o'){x.strokeStyle='#fff';x.lineWidth=2;path(x,q);x.stroke()}})}
 let thumbSrc=null,thumbs={};
-function thumbBase(){if(thumbSrc)return thumbSrc;const c=document.createElement('canvas');c.width=c.height=96;const x=c.getContext('2d');const p=S.ph.find(Boolean)||(S.bg.t==='photo'&&S.bg.img);
-  if(p){const im=p.base,s=Math.max(96/im.width,96/im.height);x.drawImage(im,(96-im.width*s)/2,(96-im.height*s)/2,im.width*s,im.height*s)}
-  else{const g=x.createLinearGradient(0,0,0,96);g.addColorStop(0,'#F7D6C9');g.addColorStop(.55,'#E9A4B4');g.addColorStop(1,'#8C6D7C');x.fillStyle=g;x.fillRect(0,0,96,96)}
+function thumbBase(){if(thumbSrc)return thumbSrc;const c=document.createElement('canvas');c.width=c.height=120;const x=c.getContext('2d');const p=S.ph.find(Boolean)||(S.bg.t==='photo'&&S.bg.img);
+  if(p){const im=p.base,s=Math.max(120/im.width,120/im.height);x.drawImage(im,(120-im.width*s)/2,(120-im.height*s)/2,im.width*s,im.height*s)}
+  else{const g=x.createLinearGradient(0,0,0,120);g.addColorStop(0,'#F7D6C9');g.addColorStop(.55,'#E9A4B4');g.addColorStop(1,'#8C6D7C');x.fillStyle=g;x.fillRect(0,0,120,120)}
   thumbSrc=c;thumbs={};return c}
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const sws=(cur,attr,dis)=>COL.map(c=>`<button class="sw ${!dis&&cur&&c.toLowerCase()===cur.toLowerCase()?'on':''}" style="background:${c}" ${attr}="${c}" ${dis?'disabled':''} aria-label="색 ${c}"></button>`).join('');
-const fb=(t,en)=>FONTS.map((f,i)=>[f,i]).filter(([f])=>!!f[4]===!!en).map(([f,i])=>`<button class="fb ${i===t.f?'on':''}" data-font="${i}"><b style="font-family:'${f[0]}',Pret;font-weight:${f[2]}">${f[4]?'Aa':'가'}</b>${f[1]}</button>`).join('');
-function fltUI(){let h=`<div><div class="hc">필터 <small>(전체 적용)</small></div><div class="flts">${FLT.map(([k,n])=>`<button class="fl ${k===S.flt.k?'on':''}" data-f="${k}"><canvas width="96" height="96" data-fc="${k}"></canvas>${n}</button>`).join('')}</div></div>`;
-  if(S.flt.k!=='none')h+=`<div class="row"><div class="hc" style="margin:0">세기</div><input type="range" id="fs" min="0" max="150" value="${Math.round(S.flt.s*100)}" aria-label="필터 세기"><span class="v" id="fsv">${Math.round(S.flt.s*100)}%</span></div>`;
-  if(S.flt.k==='disp')h+=`<div class="hl"><div class="hc">날짜 도장</div><div class="seg"><button class="${S.flt.ds?'on':''}" data-ds="1">넣기</button><button class="${!S.flt.ds?'on':''}" data-ds="0">빼기</button></div></div>`;
+const sws=(cur,attr)=>COL.map(c=>`<button class="sw ${cur&&c.toLowerCase()===cur.toLowerCase()?'on':''}" style="background:${c}" ${attr}="${c}" aria-label="색 ${c}"></button>`).join('');
+const fontStrip=t=>FONTS.map((f,i)=>`<button class="fb ${i===t.f?'on':''}" data-font="${i}"><b style="font-family:'${f[0]}',Pret;font-weight:${f[2]}">${f[4]?'Aa':'가'}</b>${f[1]}</button>`).join('');
+const sl=(id,lab,min,max,val,unit='')=>`<div class="row"><span class="lab">${lab}</span><input type="range" id="${id}" min="${min}" max="${max}" value="${val}" aria-label="${lab}"><span class="v" id="${id}v">${val}${unit}</span></div>`;
+const TOOLS=[['font','가','글꼴'],['col','●','색'],['size','↕','크기'],['al','≡','정렬'],['sh','◐','그림자'],['ls','↔','자간']];
+function fltUI(){let h=`<div class="strip">${FLT.map(([k,n])=>`<button class="ft ${k===S.flt.k?'on':''}" data-f="${k}"><canvas width="120" height="120" data-fc="${k}"></canvas>${n}</button>`).join('')}</div>`;
+  if(S.flt.k!=='none')h+=sl('fs','세기',0,150,Math.round(S.flt.s*100),'%');
+  if(S.flt.k==='disp')h+=`<div class="hl"><span class="lab">날짜 도장</span><div class="seg"><button class="${S.flt.ds?'on':''}" data-ds="1">넣기</button><button class="${!S.flt.ds?'on':''}" data-ds="0">빼기</button></div></div>`;
   return h}
 function panel(){const P=$('panel');let h='';
   if(S.tab==='lay'){
-    h+=`<div class="hl"><div class="hc">사진 수</div><div class="seg">${[1,2,3,4,5].map(n=>`<button class="${n===S.n?'on':''}" data-n="${n}">${n}</button>`).join('')}</div></div>
+    h+=`<div class="hl"><span class="lab">사진 수</span><div class="seg">${[1,2,3,4,5].map(n=>`<button class="${n===S.n?'on':''}" data-n="${n}">${n}</button>`).join('')}</div></div>
     <div class="r2"><div><div class="hc">모양</div><div class="ths">${[0,1,2].map(k=>`<button class="th ${k===S.k?'on':''}" data-k="${k}" aria-label="모양 ${k+1}"><canvas width="88" height="110"></canvas></button>`).join('')}</div></div>
     <div class="vd"><div class="hc">여백</div><div class="gps">${GAPS.map((g,i)=>`<button class="gp ${i===S.gap?'on':''}" data-g="${i}"><span style="gap:${[0,2,5][i]}px;padding:${[0,2,5][i]}px"><i></i><i></i><i></i><i></i></span>${g[0]}</button>`).join('')}</div></div></div>
-    <div class="hl"><div class="hc">사진 테두리</div><div class="seg"><button class="${!S.frame?'on':''}" data-fr="0">없음</button><button class="${S.frame?'on':''}" data-fr="1">흰색</button></div></div>
-    <p class="tip">빈 칸을 누르면 사진을 넣어요. 여러 장을 한 번에 고르면 빈 칸에 차례로 들어가요.</p>`}
+    <div class="hl"><span class="lab">사진 테두리</span><div class="seg"><button class="${!S.frame?'on':''}" data-fr="0">없음</button><button class="${S.frame?'on':''}" data-fr="1">흰색</button></div></div>`}
   else if(S.tab==='ph'){const p=S.sel!=null&&S.ph[S.sel];
-    if(p)h+=`<div><div class="hc">선택한 사진</div><div class="pbs"><button class="pb" data-m="re">바꾸기</button><button class="pb" data-m="fl">↔ 뒤집기</button><button class="pb" data-m="del">삭제</button></div></div>
-      <div class="row"><div class="hc" style="margin:0">확대</div><input type="range" id="pz" min="100" max="400" value="${Math.round(p.z*100)}" aria-label="사진 확대"><span class="v" id="pzv">${Math.round(p.z*100)}%</span></div>`;
-    h+=fltUI();
-    h+=`<p class="tip">${p?'사진을 끌면 위치가 바뀌어요. 두 손가락으로 벌리거나 확대하면 더 많이 움직일 수 있어요.':S.ph.some(Boolean)?'사진을 누르면 바꾸기·뒤집기·확대를 할 수 있어요.':'먼저 빈 칸을 눌러 사진을 넣어 주세요.'}</p>`}
+    if(p)h+=`<div class="strip"><button class="tc" data-m="re">바꾸기</button><button class="tc" data-m="fl">↔ 뒤집기</button><button class="tc" data-m="del">삭제</button></div>`+sl('pz','확대',100,400,Math.round(p.z*100),'%');
+    else h+=`<p class="tip">${S.ph.some(Boolean)?'사진을 누르면 바꾸기·뒤집기·확대를 할 수 있어요. 필터는 전체에 적용돼요.':'먼저 빈 칸을 눌러 사진을 넣어 주세요.'}</p>`;
+    h+=fltUI()}
   else if(S.tab==='bg'){const b=S.bg;
-    h+=`<div class="seg full">${[['basic','기본'],['design','디자인'],['photo','내 사진']].map(([k,n])=>`<button class="${S.seg===k?'on':''}" data-seg="${k}">${n}</button>`).join('')}</div>`;
-    if(S.seg==='basic')h+=`<div><div class="hc">단색</div><div class="tiles">${BGC.map((c,i)=>`<button class="tile ${b.t==='color'&&b.c===i?'on':''}" style="background:${c[0]}" data-bgc="${i}" aria-label="${c[2]}"></button>`).join('')}</div></div>
-      <div><div class="hc">그라데이션</div><div class="tiles">${GR.map((g,i)=>`<button class="tile ${b.t==='grad'&&b.g===i?'on':''}" style="background:linear-gradient(160deg,${g[1]},${g[3]?g[3]+',':''}${g[2]})" data-grd="${i}" aria-label="${g[0]}"></button>`).join('')}</div></div>`;
-    else if(S.seg==='design')h+=`<div><div class="hc">무늬</div><div class="ptiles">${PATS.map(p=>`<button class="pt ${b.t==='pat'&&b.p===p?'on':''}" data-pat="${p}"><canvas width="150" height="150" data-pc="${p}"></canvas>${p}</button>`).join('')}</div></div>
-      <div><div class="hc">바탕색</div><div class="sws">${BGC.map((c,i)=>`<button class="sw ${b.c===i?'on':''}" style="background:${c[0]}" data-pbc="${i}" aria-label="${c[2]}"></button>`).join('')}</div></div>`;
-    else{h+=`<div class="pbs"><button class="pb" id="bgpick">${b.img?'사진 바꾸기':'사진 고르기'}</button>${b.img&&b.t!=='photo'?'<button class="pb" id="bguse">이 사진 쓰기</button>':''}</div>`;
-      if(b.img&&b.t==='photo')h+=`<div class="row"><div class="hc" style="margin:0">확대</div><input type="range" id="bz" min="100" max="250" value="${Math.round((b.z||1)*100)}" aria-label="배경 사진 확대"><span class="v" id="bzv">${Math.round((b.z||1)*100)}%</span></div><div class="row"><div class="hc" style="margin:0">어둡게</div><input type="range" id="bd" min="0" max="50" value="${Math.round(b.dim*100)}" aria-label="어둡게"><span class="v" id="bdv">${Math.round(b.dim*100)}%</span></div>`;
-      if(b.img&&b.t==='photo'&&S.mode==='card')h+=fltUI();
-      h+=`<p class="tip">${S.mode==='card'?'사진을 끌면 위치가 바뀌어요.':'사진을 끌면 위치가 바뀌어요. 여백을 \'넓게\'로 하면 배경이 잘 보여요.'}</p>`}}
+    h+=`<div class="seg full">${[['color','단색'],['grad','그라데이션'],['pat','무늬'],['photo','내 사진']].map(([k,n])=>`<button class="${S.seg===k?'on':''}" data-seg="${k}">${n}</button>`).join('')}</div>`;
+    if(S.seg==='color')h+=`<div class="strip">${BGC.map((c,i)=>`<button class="tile ${b.t==='color'&&b.c===i?'on':''}" style="background:${c[0]}" data-bgc="${i}" aria-label="${c[2]}"></button>`).join('')}</div>`;
+    else if(S.seg==='grad')h+=`<div class="strip">${GR.map((g,i)=>`<button class="tile ${b.t==='grad'&&b.g===i?'on':''}" style="background:linear-gradient(160deg,${g[1]},${g[3]?g[3]+',':''}${g[2]})" data-grd="${i}" aria-label="${g[0]}"></button>`).join('')}</div>`;
+    else if(S.seg==='pat')h+=`<div class="strip">${PATS.map(p=>`<button class="pt ${b.t==='pat'&&b.p===p?'on':''}" data-pat="${p}"><canvas width="120" height="120" data-pc="${p}"></canvas>${p}</button>`).join('')}</div>
+      <div class="strip">${BGC.map((c,i)=>`<button class="sw ${b.c===i?'on':''}" style="background:${c[0]}" data-pbc="${i}" aria-label="${c[2]}"></button>`).join('')}</div>`;
+    else{h+=`<div class="strip"><button class="tc" id="bgpick">${b.img?'사진 바꾸기':'＋ 사진 고르기'}</button>${b.img&&b.t!=='photo'?'<button class="tc" id="bguse">이 사진 쓰기</button>':''}</div>`;
+      if(b.img&&b.t==='photo'){h+=sl('bz','확대',100,250,Math.round((b.z||1)*100),'%')+sl('bd','어둡게',0,50,Math.round(b.dim*100),'%');if(S.mode==='card')h+=fltUI()}
+      else h+=`<p class="tip">사진을 고르면 끌어서 위치를 옮길 수 있어요.</p>`}}
   else if(S.tab==='tx'){const t=S.texts[S.tsel];
-    h+=`<div class="tcs">${S.texts.map((x,i)=>`<button class="tc ${i===S.tsel?'on':''}" data-ti="${i}">${esc((x.s.trim().split('\n')[0]||'빈 글씨').slice(0,7))}</button>`).join('')}${S.texts.length<MAXT?'<button class="tc add" id="tadd">＋ 추가</button>':''}${t?'<span class="tact"><button class="tc" id="tedit" aria-label="글 고치기">✎ 고치기</button><button class="tc" id="tdel" aria-label="이 글씨 삭제">삭제</button></span>':''}</div>`;
-    if(!t)h+=`<p class="tip">${S.texts.length?'고칠 글씨를 위에서 고르거나 사진 위 글씨를 눌러요.':'＋ 추가를 누르면 사진 위에 바로 쓸 수 있어요.'} 글씨는 ${MAXT}개까지 넣을 수 있어요.</p>`;
-    else h+=`<div><div class="hc">글꼴</div><div class="fbs">${fb(t,0)}</div><div class="hc" style="margin-top:10px">영문 글꼴 <small>(한글은 프리텐다드로 나와요)</small></div><div class="fbs">${fb(t,1)}</div></div>
-    <div><div class="hc">색</div><div class="sws">${sws(t.col,'data-tc')}<label class="sw pick" aria-label="색 직접 고르기"><input type="color" id="tcp" value="${t.col}"></label></div></div>
-    <div class="row"><div class="hc" style="margin:0">크기</div><input type="range" id="tz" min="8" max="70" value="${t.size}" aria-label="글씨 크기"><span class="v" id="tzv">${t.size}</span></div>
-    <div class="hl"><div class="hc">정렬</div><div class="seg">${[['left','al'],['center','ac'],['right','ar'],['justify','aj']].map(([k,i])=>`<button class="${t.al===k?'on':''}" data-al="${k}" aria-label="${k}">${IC[i]}</button>`).join('')}</div>
-</div>
-    <div class="row"><div class="hc" style="margin:0">자간</div><input type="range" id="tls" min="-5" max="40" value="${Math.round((t.ls||0)*100)}" aria-label="글자 사이 간격"><span class="v" id="tlsv">${Math.round((t.ls||0)*100)}</span></div>
-    <div class="hl"><div class="hc">그림자</div><div class="seg">${['없음','은은하게','또렷하게'].map((n,i)=>`<button class="${(t.sh===true?1:(t.sh||0))===i?'on':''}" data-sh="${i}">${n}</button>`).join('')}</div></div>
-    <p class="tip">사진 위 글씨를 끌면 어디든 옮겨지고, 한 번 더 누르면 바로 고쳐요. ⤡로 크기를 바꿔요.</p>`;
-    h+=`<p class="tip" style="font-size:11px">잘난체: ㈜여기어때컴퍼니 제공 · 그 밖의 글꼴은 무료 공개 글꼴(OFL 등)이에요.</p>`}
-  else{const n=S.items.length,full=n>=MAXI,sel=S.isel!=null?S.items[S.isel]:null,can=sel&&!D.icons[sel.i].fx;
-    h+=`<div><div class="hl" style="margin-bottom:7px"><div class="hc">아이콘</div><span class="cnt">${n} / ${MAXI}</span></div>
-    <div class="grid">${D.icons.map((it,i)=>`<button class="cell" data-add="${i}" ${full?'disabled':''} aria-label="${it.n}">${icSvg(i,'currentColor',26).replace(/width="26" height="26"/,'')}</button>`).join('')}</div></div>
-    <div><div class="hc">색 <small>${can?'(선택한 아이콘)':'(아이콘을 누르면 바꿀 수 있어요)'}</small></div><div class="sws ${can?'':'off'}">${sws(can?sel.col:'','data-icc',!can)}</div></div>
-    <p class="tip">${full?`${MAXI}개까지 붙일 수 있어요. ✕로 지우면 더 넣을 수 있어요.`:'누르면 가운데에 붙어요. 끌어서 옮기고 ⤡로 크기를 바꿔요. 스티커는 다음 판에서 더해요.'}</p>`}
+    h+=`<div class="strip">${S.texts.map((x,i)=>`<button class="tc ${i===S.tsel?'on':''}" data-ti="${i}">${esc((x.s.trim().split('\n')[0]||'빈 글씨').slice(0,7))}</button>`).join('')}${S.texts.length<MAXT?'<button class="tc add" id="tadd">＋ 추가</button>':''}${t?'<button class="tc" id="tedit" aria-label="글 고치기">✎ 고치기</button><button class="tc" id="tdel" aria-label="이 글씨 삭제">삭제</button>':''}</div>`;
+    if(!t)h+=`<p class="tip">${S.texts.length?'고칠 글씨를 위에서 고르거나 사진 위 글씨를 눌러요.':'＋ 추가를 누르면 사진 위에 바로 쓸 수 있어요.'}</p>`;
+    else{const tt=S.ttool||'font';h+=`<div class="tools">${TOOLS.map(([k,i,n])=>`<button class="${k===tt?'on':''}" data-tool="${k}"><b>${i}</b>${n}</button>`).join('')}</div>`;
+      if(tt==='font')h+=`<div class="strip">${fontStrip(t)}</div><p class="tip" style="font-size:10.5px">Aa는 영문 글꼴(한글은 프리텐다드로 나와요) · 잘난체: ㈜여기어때컴퍼니 제공</p>`;
+      if(tt==='col')h+=`<div class="strip">${sws(t.col,'data-tc')}<label class="sw pick" aria-label="색 직접 고르기"><input type="color" id="tcp" value="${t.col}"></label></div>`;
+      if(tt==='size')h+=sl('tz','크기',8,70,t.size);
+      if(tt==='al')h+=`<div class="seg full">${[['left','al','왼쪽'],['center','ac','가운데'],['right','ar','오른쪽'],['justify','aj','양쪽']].map(([k,i,n])=>`<button class="${t.al===k?'on':''}" data-al="${k}" aria-label="${n}">${IC[i]}</button>`).join('')}</div>`;
+      if(tt==='sh')h+=`<div class="seg full">${['없음','은은하게','또렷하게'].map((n,i)=>`<button class="${(t.sh===true?1:(t.sh||0))===i?'on':''}" data-sh="${i}">${n}</button>`).join('')}</div>`;
+      if(tt==='ls')h+=sl('tls','자간',-5,40,Math.round((t.ls||0)*100))}}
+  else{const n=S.items.length,full=n>=MAXI,sel=S.isel!=null?S.items[S.isel]:null,cur=sel&&!D.icons[sel.i].fx?sel.col:S.icol;
+    h+=`<div class="hl"><span class="lab">색</span><span class="tip">${sel?'고른 아이콘 색이 바뀌어요':'먼저 고르면 그 색으로 붙어요'}</span></div><div class="strip">${sws(cur,'data-icc')}</div>
+    <div class="hl"><span class="lab">아이콘</span><span class="cnt">${n} / ${MAXI}</span></div>
+    <div class="igrid">${D.icons.map((it,i)=>`<button class="cell" data-add="${i}" ${full?'disabled':''} aria-label="${it.n}">${icSvg(i,'currentColor',26).replace(/width="26" height="26"/,'')}</button>`).join('')}</div>`}
   P.innerHTML=h;bind()}
 function bind(){const P=$('panel'),on=(q,f)=>P.querySelectorAll(q).forEach(b=>b.onclick=()=>f(b));const R=()=>{panel();draw()};
+  const range=(id,f,unit='')=>{const e=$(id);if(e)e.oninput=()=>{$(id+'v').textContent=e.value+unit;f(+e.value)}};
   on('[data-n]',b=>{S.n=+b.dataset.n;S.sel=null;if(S.size==='orig'&&S.n!==1){S.size='4:5';rlabel()}panel();layout()});
   on('[data-fr]',b=>{S.frame=+b.dataset.fr;R()});
   on('[data-ds]',b=>{S.flt.ds=b.dataset.ds==='1';panel();fdraw()});
   P.querySelectorAll('[data-k]').forEach(b=>miniLay(b.querySelector('canvas'),S.n,+b.dataset.k));on('[data-k]',b=>{S.k=+b.dataset.k;S.sel=null;R()});
   on('[data-g]',b=>{S.gap=+b.dataset.g;R()});
-  const tb=P.querySelector('[data-fc]')&&thumbBase();P.querySelectorAll('[data-fc]').forEach(c=>{const k=c.dataset.fc;if(!thumbs[k])thumbs[k]=effects(colorize(tb,k,1),k,1,false);c.getContext('2d').drawImage(thumbs[k],0,0)});
+  const tb=P.querySelector('[data-fc]')&&thumbBase();P.querySelectorAll('[data-fc]').forEach(c=>{const k=c.dataset.fc;if(!thumbs[k])thumbs[k]=effects(colorize(tb,k,1),k,1,false);c.getContext('2d').drawImage(thumbs[k],0,0,120,120)});
   on('[data-f]',b=>{S.flt.k=b.dataset.f;panel();fdraw()});
-  const fs=$('fs');if(fs){let tm=0;fs.oninput=()=>{$('fsv').textContent=fs.value+'%';S.flt.s=fs.value/100;clearTimeout(tm);tm=setTimeout(fdraw,150)}}
-  const pz=$('pz');if(pz)pz.oninput=()=>{const p=S.ph[S.sel];if(!p)return;p.z=pz.value/100;$('pzv').textContent=pz.value+'%';draw()};
+  let tm=0;range('fs',v=>{S.flt.s=v/100;clearTimeout(tm);tm=setTimeout(fdraw,150)},'%');
+  range('pz',v=>{const p=S.ph[S.sel];if(p){p.z=v/100;draw()}},'%');
   on('[data-m]',b=>{const m=b.dataset.m,p=S.ph[S.sel];if(!p)return;if(m==='re')pick(S.sel,false);else if(m==='fl'){p.fl=!p.fl;draw()}else{S.ph[S.sel]=null;S.sel=null;thumbSrc=null;panel();layout()}});
-  on('[data-seg]',b=>{S.seg=b.dataset.seg;if(S.seg==='design'&&S.bg.t!=='pat'){S.bg.t='pat';if(S.bg.c===0)S.bg.c=2}if(S.seg==='photo'&&S.bg.img)S.bg.t='photo';R()});
+  on('[data-seg]',b=>{const k=b.dataset.seg;S.seg=k;if(k==='color'||k==='grad')S.bg.t=k;if(k==='pat'){S.bg.t='pat';if(S.bg.c===0)S.bg.c=2}if(k==='photo'&&S.bg.img)S.bg.t='photo';R()});
   on('[data-bgc]',b=>{S.bg.t='color';S.bg.c=+b.dataset.bgc;R()});
   on('[data-grd]',b=>{S.bg.t='grad';S.bg.g=+b.dataset.grd;R()});
-  P.querySelectorAll('[data-pc]').forEach(c=>paintBg(c.getContext('2d'),150,150,{t:'pat',c:S.bg.c,p:c.dataset.pc}));
+  P.querySelectorAll('[data-pc]').forEach(c=>paintBg(c.getContext('2d'),120,120,{t:'pat',c:S.bg.c,p:c.dataset.pc}));
   on('[data-pat]',b=>{S.bg.t='pat';S.bg.p=b.dataset.pat;R()});
   on('[data-pbc]',b=>{S.bg.t='pat';S.bg.c=+b.dataset.pbc;R()});
   const bp=$('bgpick');if(bp)bp.onclick=()=>$('bgfile').click();const bu=$('bguse');if(bu)bu.onclick=()=>{S.bg.t='photo';R()};
-  const bz=$('bz');if(bz)bz.oninput=()=>{S.bg.z=bz.value/100;$('bzv').textContent=bz.value+'%';draw()};const bd=$('bd');if(bd)bd.oninput=()=>{S.bg.dim=bd.value/100;$('bdv').textContent=bd.value+'%';draw()};
+  range('bz',v=>{S.bg.z=v/100;draw()},'%');range('bd',v=>{S.bg.dim=v/100;draw()},'%');
   const T=()=>S.texts[S.tsel];
   on('[data-ti]',b=>{S.tsel=+b.dataset.ti;R()});
+  on('[data-tool]',b=>{S.ttool=b.dataset.tool;panel()});
   const ta=$('tadd');if(ta)ta.onclick=()=>{const n=S.texts.length,last=S.texts[S.tsel]||S.texts[n-1];S.texts.push({s:'',f:last?last.f:0,size:last?last.size:22,al:'center',col:last?last.col:'#FFFFFF',cx:.5,cy:[.5,.3,.7,.15,.85][n%5],sh:1,ls:last?last.ls||0:0});S.tsel=n;panel();draw();openEd()};
   const td=$('tdel');if(td)td.onclick=()=>{S.texts.splice(S.tsel,1);S.tsel=null;R()};
   const te=$('tedit');if(te)te.onclick=openEd;
   on('[data-font]',b=>{T().f=+b.dataset.font;T().ls=FLS[FONTS[T().f][0]]||0;R();const f=FONTS[T().f];document.fonts.load(fnt(f,40),'가A').then(draw).catch(()=>{})});
   on('[data-tc]',b=>{T().col=b.dataset.tc;R()});const tcp=$('tcp');if(tcp)tcp.oninput=()=>{T().col=tcp.value;draw()};
-  const tz=$('tz');if(tz)tz.oninput=()=>{T().size=+tz.value;$('tzv').textContent=tz.value;draw()};
-  on('[data-al]',b=>{T().al=b.dataset.al;R()});on('[data-sh]',b=>{T().sh=+b.dataset.sh;R()});const tls=$('tls');if(tls)tls.oninput=()=>{T().ls=tls.value/100;$('tlsv').textContent=tls.value;draw()};
-  on('[data-add]',b=>{if(S.items.length>=MAXI)return;S.items.push({i:+b.dataset.add,x:.5,y:.5,w:.14,col:'#E58FA5'});S.isel=S.items.length-1;R()});
-  on('[data-icc]',b=>{const it=S.items[S.isel];if(it){it.col=b.dataset.icc;R()}});
+  range('tz',v=>{T().size=v;draw()});range('tls',v=>{T().ls=v/100;draw()});
+  on('[data-al]',b=>{T().al=b.dataset.al;R()});on('[data-sh]',b=>{T().sh=+b.dataset.sh;R()});
+  on('[data-add]',b=>{if(S.items.length>=MAXI)return;S.items.push({i:+b.dataset.add,x:.5,y:.5,w:.14,col:S.icol});S.isel=S.items.length-1;R()});
+  on('[data-icc]',b=>{S.icol=b.dataset.icc;const it=S.items[S.isel];if(it)it.col=b.dataset.icc;R()});
 }
 
 /* ---------- 크기 ---------- */
 $('rs').innerHTML=Object.entries(SIZES).map(([k,v])=>`<option value="${k}">${v[2]} · ${k}</option>`).join('')+'<option value="orig">원본 비율 (사진 1장)</option>';
 function SZ(){if(S.size==='orig'&&S.n===1&&S.ph[0]){const w=S.ph[0].base.width,h=S.ph[0].base.height;return w>=h?[1440,Math.round(1440*h/w)]:[1080,Math.round(1080*h/w)]}const z=SIZES[S.size]||SIZES['4:5'];return[z[0],z[1]]}
-function rlabel(){$('rs').value=S.size;$('rl').textContent=S.size==='orig'?'원본 비율':`${S.size} ${SIZES[S.size][2]}`}
+function rlabel(){$('rs').value=S.size;$('rl').textContent=S.size==='orig'?'원본':S.size}
 $('rs').onchange=()=>{const v=$('rs').value;if(v==='orig'&&!(S.n===1&&S.ph[0])){toast('사진 1장을 넣었을 때 쓸 수 있어요');rlabel();return}S.size=v;rlabel();layout()};
 
 /* ---------- 화면 이동 ---------- */
@@ -531,7 +539,7 @@ $('goCol').onclick=()=>openCol('col');
 $('goCard').onclick=openCard;
 
 /* ========== 앱(PWA): 설치 · 업데이트 · 자동 저장 · 최근 작업 ========== */
-const APP_V='1.0.1',NOTES="앱 아이콘을 새로 바꿨어요 (사진 콜라주 + 반짝이).\n· 홈 화면 아이콘은 폰이 확인한 뒤에 바뀌어서 하루 이상 걸릴 수 있어요.\n· 만들던 작업은 그대로 남아 있어요.",LSK='ttukttak-card';
+const APP_V='1.1',NOTES="편집 화면을 더 간편하게 바꿨어요.\n· 필터·배경·글꼴·아이콘을 작은 견본 한 줄로 → 스크롤이 거의 없어요\n· 글씨는 도구 버튼(글꼴·색·크기·정렬·그림자·자간)을 눌러 하나씩\n· 아이콘은 색을 먼저 고르면 그 색으로 붙어요\n· 미리보기 사진이 더 선명해졌어요",LSK='ttukttak-card';
 const UA=navigator.userAgent,isIOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),isSamsung=/SamsungBrowser/i.test(UA);
 const inApp=/KAKAOTALK|NAVER\(|NAVER|Instagram|FBAN|FBAV|Line\/|DaumApps|BAND\/|everytimeApp|KAKAOSTORY/i.test(UA)||(isIOS&&/CriOS|FxiOS|EdgiOS/.test(UA));
 const isFile=location.protocol==='file:',standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
@@ -588,7 +596,7 @@ async function saveOnce(){if($('ed').hidden&&!S._closing||!dirty())return;svBusy
   catch(e){if(!svWarn){svWarn=true;toast('작업을 폰에 저장하지 못했어요. 이미지로 저장해 두세요')}}finally{svBusy=false}}
 async function openWork(id){let w;try{w=await DB.get(id)}catch(_){}if(!w){toast('작업을 열 수 없어요');renderRecent();return}
   const st=w.st,toC=async b=>{const bm=await createImageBitmap(b),c=document.createElement('canvas');c.width=bm.width;c.height=bm.height;c.getContext('2d').drawImage(bm,0,0);return c};
-  const n=fresh();Object.assign(n,{mode:st.mode,size:st.size,n:st.n,k:st.k,gap:st.gap,frame:st.frame,flt:st.flt,seg:st.seg||'basic',texts:st.texts,items:st.items,id:w.id,tab:st.mode==='card'?'tx':'ph'});
+  const n=fresh();Object.assign(n,{mode:st.mode,size:st.size,n:st.n,k:st.k,gap:st.gap,frame:st.frame,flt:st.flt,seg:({basic:'color',design:'pat'})[st.seg]||st.seg||'color',texts:st.texts,items:st.items,id:w.id,tab:st.mode==='card'?'tx':'ph'});
   Object.assign(n.bg,st.bg);n.ph=await Promise.all(st.ph.map(async q=>q?{base:await toC(q.blob),blob:q.blob,z:q.z,ox:q.ox,oy:q.oy,fl:q.fl}:null));
   if(st.bgBlob)n.bg.img={base:await toC(st.bgBlob),blob:st.bgBlob};n._init=JSON.stringify(n.texts.map(t=>t.s));showEd(n)}
 let thumbURLs=[];
