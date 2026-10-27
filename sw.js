@@ -1,5 +1,5 @@
 // 뚝딱카드 서비스워커 — 버전은 build_pwa.py가 넣음
-const CACHE='ttukttak-card-1.1';
+const CACHE='ttukttak-card-1.2';
 const FILES=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./apple-touch-icon.png'];
 // 설치 시 브라우저 HTTP 캐시를 건너뜀 (깃허브 max-age=600 때문에 옛 파일이 저장되는 것 방지)
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(f,{cache:'reload'})))).then(()=>self.skipWaiting())));
