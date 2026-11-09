@@ -1,20 +1,21 @@
-/* 나의 말씀노트 서비스워커 (이 앱 캐시 mynote- 만 지워요)
-   CORE: 앱 화면·아이콘 (새 버전마다 새로 받음)
-   STATIC: 성경·글꼴 (내용이 바뀌지 않으면 다시 받지 않음 · 글꼴은 파일 이름에 내용 표시가 붙어 있음) */
-const CORE='mynote-core-v32-dd8f8296',STATIC='mynote-static-1f5f3545';
-const COREF=["./", "index.html", "manifest.webmanifest", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "maskable-512.png"],STATICF=["NotoSerifKR-500.f7bd1622.woff2", "NotoSerifKR-700.08911847.woff2", "pret-Regular.89f1d362.woff2", "pret-SemiBold.7a08d4b0.woff2"];
-self.addEventListener('install',e=>{e.waitUntil((async()=>{
-  const c=await caches.open(CORE);await c.addAll(COREF.map(f=>new Request(f,{cache:'reload'})));
-  const st=await caches.open(STATIC);
-  await Promise.all(STATICF.map(async f=>{if(await st.match(f))return;const old=await caches.match(f,{ignoreSearch:true});if(old){await st.put(f,old);return}const r=await fetch(f,{cache:'reload'});if(r.ok)await st.put(f,r)}));
-  await self.skipWaiting()})())});
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{const ks=await caches.keys();await Promise.all(ks.filter(k=>k.indexOf('mynote-')===0&&k!==CORE&&k!==STATIC).map(k=>caches.delete(k)));
-  const st=await caches.open(STATIC);const want=new Set(STATICF.map(f=>new URL(f,self.registration.scope).href));for(const r of await st.keys())if(!want.has(r.url))await st.delete(r);
-  await self.clients.claim()})())});
-self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==location.origin)return;
-  if(/version\.json$/.test(new URL(r.url).pathname))return;
-  if(r.mode==='navigate'){e.respondWith(new Promise(res=>{let done=false;const fb=()=>{if(done)return;done=true;caches.match('index.html').then(m=>res(m||fetch(r)))};const t=setTimeout(fb,3000);
-    fetch(r,{cache:'no-store'}).then(n=>{if(done)return;clearTimeout(t);
-      /* 서버가 멈추거나(중지 안내·오류·다른 곳으로 넘김) 하면, 받아 둔 앱으로 열어요 */
-      if(n&&n.ok&&n.type==='basic'&&!n.redirected){done=true;const c=n.clone();caches.open(CORE).then(ca=>ca.put('index.html',c));res(n)}else{caches.match('index.html').then(m=>{done=true;res(m||n)})}}).catch(()=>{clearTimeout(t);fb()})}));return}
-  e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>m||fetch(r).catch(()=>Response.error())))});
+// 뚝딱카드 서비스워커 — 버전은 build_pwa.py가 넣음
+const CACHE='ttukttak-card-1.7.2';
+// v1.7.2: 다른 앱 파일이 이 저장소에 잘못 올라와도 뚝딱카드를 지킴
+//  ① 이 파일 이름(sw-ttukttak.js)은 다른 앱에 없음 → 다른 앱 sw.js가 올라와도 이 서비스워커가 그대로 남음
+//  ② 화면(index.html)을 인터넷에서 받으면 맨 앞의 <meta name="app-id" content="ttukttak-card">를 확인, 없으면 저장해 둔 뚝딱카드로 엶
+//  ③ /ttukttak-card/ 가 아닌 곳에 올라가면 설치 안 됨
+const HOME_OK=new URL(self.registration.scope).pathname.endsWith('/ttukttak-card/');
+const isMine=async res=>{try{const rd=res.clone().body.getReader();let t='';while(t.length<600){const {done,value}=await rd.read();if(done)break;t+=new TextDecoder().decode(value)}rd.cancel().catch(()=>{});return t.slice(0,600).includes('content="ttukttak-card"')}catch(_){return false}};  // 앞부분만 읽음
+const FILES=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./apple-touch-icon.png'];
+// 설치 시 브라우저 HTTP 캐시를 건너뜀 (깃허브 max-age=600 때문에 옛 파일이 저장되는 것 방지)
+self.addEventListener('install',e=>e.waitUntil(!HOME_OK?Promise.reject(new Error('뚝딱카드 저장소가 아님')):caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(f,{cache:'reload'})))).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('ttukttak-card-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+const put=(req,res)=>{const c=res.clone();caches.open(CACHE).then(x=>x.put(req,c))};
+self.addEventListener('fetch',e=>{const req=e.request;if(req.method!=='GET')return;const url=new URL(req.url);if(url.origin!==location.origin)return;
+  if(url.pathname.endsWith('/version.json'))return;  // 항상 인터넷
+  if(/\.(png|webmanifest)$/.test(url.pathname)){  // 아이콘·manifest는 인터넷 먼저
+    e.respondWith(fetch(req,{cache:'no-cache'}).then(res=>{if(res.ok)put(req,res);return res}).catch(()=>caches.match(req,{ignoreSearch:true})));return}
+  if(req.mode==='navigate'){  // 화면: 인터넷 먼저, 3초·오류·넘김이면 저장본
+    e.respondWith(new Promise(ok=>{let done=false;const fb=()=>{if(done)return;done=true;caches.match('./index.html').then(r=>ok(r||fetch(req)))};const t=setTimeout(fb,3000);
+      fetch(req,{cache:'no-cache'}).then(async res=>{if(res.ok&&!res.redirected&&res.type==='basic'&&await isMine(res)){clearTimeout(t);const c=res.clone();caches.open(CACHE).then(x=>x.put('./index.html',c));if(done)return;done=true;ok(res)}else{clearTimeout(t);fb()}}).catch(()=>{clearTimeout(t);fb()})}));return}
+  e.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(res=>{if(res.ok&&res.type==='basic')put(req,res);return res})))});
