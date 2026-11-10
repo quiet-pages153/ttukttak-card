@@ -755,7 +755,7 @@ function txInk(a){if(a._ib)return a._ib;const w=a.width,h=a.height,d=a.getContex
   for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(d[(y*w+x)*4+3]>8){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
   return a._ib=x1<0?[0,0,w,h]:[x0,y0,x1-x0+1,y1-y0+1]}
 
-/* ---------- 템플릿 (v24: 말씀 폴더 12개. 예전 기본 5개는 지움 → templates_v1_8_4.js) ----------
+/* ---------- 템플릿 (v25: 말씀 폴더 17개 — 6개 추가, w37 줄무늬+흰 판 뺌("촌스럽다"), 템플릿마다 다른 말씀 / v24: 말씀 폴더 12개. 예전 기본 5개는 지움 → templates_v1_8_4.js) ----------
    좌표는 0~1 비율(가로 W, 세로 H). 글씨 size는 가로 300 기준 px.
    글씨: bw=상자 폭, bh=상자 높이(넘치면 글씨가 작아짐), va='top'=위에 붙임, vb=아래 끝 위치(길어지면 위로 자람), bal=줄 고르게, vn=절 번호 색
          ro='main' 본문 / 'ref' 출처 / 'en' 영문 책 이름 → [말씀 붙여넣기]가 채우는 칸
@@ -773,49 +773,74 @@ const dot=(x,y,r=.004,c='#FFFFFF',op=.85)=>({t:'circle',x,y,rad:r,col:c,op});
 const ln=(x1,y1,x2,y2,c,lw=.0018)=>({t:'line',x1,y1,x2,y2,col:c,lw});
 const V='여호와는 나의 목자시니 내게 부족함이 없으리로다',R='시편 23:1',E='PSALM 23';
 const main=o=>tx(Object.assign({s:V,ro:'main',bal:1,lh:2,size:12.5,bw:.66,bh:.3},o)),ref=o=>tx(Object.assign({s:R,ro:'ref',size:9.5},o));
-const L=[];const T=o=>L.push(Object.assign({cat:'word',mode:'card',size:'4:5'},o));
-T({id:'w33',name:'양 두 마리',bg:{t:'pat',c:16,p:'리넨'},
+const fr=(i,c,lw=.0022)=>({t:'rect',x:i,y:i*.8,w:1-2*i,h:1-2*i*.8,r:0,stroke:c,lw});   // 가는 테(안쪽으로 i)
+const brk=(i,L,c)=>{const a=i,b=i*.8,l=L,m=L*.8;return [ln(a,b,a+l,b,c),ln(a,b,a,b+m,c),ln(1-a,b,1-a-l,b,c),ln(1-a,b,1-a,b+m,c),ln(a,1-b,a+l,1-b,c),ln(a,1-b,a,1-b-m,c),ln(1-a,1-b,1-a-l,1-b,c),ln(1-a,1-b,1-a,1-b-m,c)]};   // 네 귀퉁이 꺾쇠
+const cap=(cy,c)=>tx({s:"TODAY'S VERSE",f:9,size:7.5,ls:.34,col:c,cy});
+// v25: 템플릿마다 다른 말씀 v:[본문, 출처, (영문)] — 분위기에 맞게, 길이 다양(샬롬 말씀노트 주제별 말씀에서, 개역한글)
+const L=[];const T=o=>{const v=o.v;delete o.v;if(v)o.texts.forEach(t=>{if(t.ro==='main')t.s=v[0];else if(t.ro==='ref')t.s=v[1];else if(t.ro==='en'&&v[2])t.s=v[2]});L.push(Object.assign({cat:'word',mode:'card',size:'4:5'},o))};
+T({id:'w33',name:'양 두 마리',v:['우리가 사랑함은 그가 먼저 우리를 사랑하셨음이라','요한일서 4:19'],bg:{t:'pat',c:16,p:'리넨'},
  texts:[main({f:3,size:13,col:'#8A5E3A',vb:.5,bh:.34}),ref({f:3,ls:.04,col:'#B08A62',cy:.545})],
  items:[st('뽀뽀하는 양',.5,.72,.46)]});
-T({id:'w35',name:'모눈 + 찢은 종이',bg:{t:'pat',c:13,p:'모눈'},
+T({id:'w35',name:'모눈 + 찢은 종이',v:['아무 것도 염려하지 말고 오직 모든 일에 기도와 간구로, 너희 구할 것을 감사함으로 하나님께 아뢰라 그리하면 모든 지각에 뛰어난 하나님의 평강이 그리스도 예수 안에서 너희 마음과 생각을 지키시리라','빌립보서 4:6-7'],bg:{t:'pat',c:13,p:'모눈'},
  texts:[tx({s:"Today's Word",f:12,size:12,col:'#4A3A3E',cy:.3}),main({f:3,lh:2.1,col:'#4A3A3E',cy:.5,bw:.56,bh:.28}),ref({f:12,size:8.5,ls:.06,col:'#8E7178',cy:.7})],
  items:[st('찢은 종이 흰 세로',.5,.49,.92,{u:1}),st('나무 집게',.79,.13,.17,{r:.25})]});
-T({id:'w38',name:'하늘 + 벚꽃 가지',bg:{t:'hex',hex:'#8FB3D3'},
+T({id:'w38',name:'하늘 + 벚꽃 가지',v:['보라 내가 새 일을 행하리니 이제 나타낼 것이라 너희가 그것을 알지 못하겠느냐 정녕히 내가 광야에 길과 사막에 강을 내리니','이사야 43:19'],bg:{t:'hex',hex:'#8FB3D3'},
  shapes:[{t:'grad',c0:'rgba(255,255,255,0)',c1:'rgba(255,255,255,.32)'},dot(.16,.33),dot(.3,.62,.003),dot(.82,.56),dot(.12,.8,.003),dot(.7,.86,.005),dot(.9,.74,.003),dot(.4,.9,.003)],
  texts:[tx({s:"Today's Word",f:13,size:15,col:'#FFF6C9',cy:.43}),main({f:1,col:'#FFFFFF',cy:.64,bw:.74,bh:.28,va:'top'}),ref({f:1,ls:.08,col:'#EEF5FB',cy:.83})],
  items:[st('벚꽃 가지 선',.74,.13,.62,{col:'#FFFFFF',r:2.75})]});
-T({id:'w17',name:'아치 창 · 무지개',bg:{t:'pat',c:29,p:'리넨'},
+T({id:'w17',name:'아치 창 · 무지개',v:['나 여호와가 말하노라 너희를 향한 나의 생각은 내가 아나니 재앙이 아니라 곧 평안이요 너희 장래에 소망을 주려하는 생각이라','예레미야 29:11'],bg:{t:'pat',c:29,p:'리넨'},
  shapes:[ar(.12,.085,.76,.83,{col:'#E3EFF9'}),ar(.145,.105,.71,.79,{stroke:'#B9D5EE',lw:.0018})],
  texts:[main({f:3,size:13,col:'#2E4666',cy:.6,bw:.54,bh:.28,va:'top'}),ref({f:0,ls:.1,col:'#4F6F98',cy:.83})],
  items:[st('무지개 구름',.5,.3,.32)]});
-T({id:'w34',name:'양을 안은 예수님',bg:{t:'pat',c:27,p:'리넨'},
+T({id:'w34',name:'양을 안은 예수님',v:['나는 선한 목자라 선한 목자는 양들을 위하여 목숨을 버리거니와','요한복음 10:11'],bg:{t:'pat',c:27,p:'리넨'},
  texts:[main({f:1,col:'#4A3A32',vb:.44}),ref({f:1,ls:.08,col:'#8C7460',cy:.485})],
  items:[st('양을 안은 예수님',.5,.73,.4,{col:'#4A3A32'})]});
-T({id:'w36',name:'분홍 종이 + 꽃',bg:{t:'pat',c:0,p:'리넨'},
+T({id:'w36',name:'분홍 종이 + 꽃',v:['선한 말은 꿀송이 같아서 마음에 달고 뼈에 양약이 되느니라','잠언 16:24'],bg:{t:'pat',c:0,p:'리넨'},
  texts:[main({f:3,lh:2.1,al:'left',col:'#4A3A3E',cx:.46,cy:.4,bw:.5,bh:.32}),ref({f:12,size:8.5,ls:.06,col:'#8E7178',cy:.9})],
  items:[st('찢은 종이 모눈',.74,.72,.36,{u:1,r:.04}),st('기본 사각',.47,.44,.74,{u:1,col:'#E7CDD0'}),st('마스킹 테이프',.17,.2,.26,{r:-.45,col:'#E3D5B5'}),st('양귀비 선',.74,.66,.34,{col:'#6E5A46',r:.06}),st('마스킹 테이프',.755,.735,.15,{r:-.2,col:'#E3D5B5'})]});
-T({id:'w37',name:'줄무늬 + 흰 판',bg:{t:'pat',c:5,p:'스트라이프'},
- shapes:[{t:'rect',x:.1,y:.13,w:.8,h:.76,r:.035,col:'#FFFFFF'},{t:'rect',x:.12,y:.146,w:.76,h:.728,r:.025,stroke:'#C9D6BE',lw:.0016},ln(.3,.755,.7,.755,'#C9D6BE',.0016),ln(.3,.815,.7,.815,'#C9D6BE',.0016)],
- texts:[tx({s:"TODAY'S VERSE",f:9,size:7.5,ls:.34,col:'#8FA382',cy:.285}),main({f:1,col:'#3F4A3A',cy:.5,bw:.6,bh:.34}),ref({f:1,ls:.08,col:'#6C8257',cy:.785})],
- items:[st('장미 구분선 위',.5,.14,.56)]});
-T({id:'w42',name:'아치 + 보타니컬',bg:{t:'pat',c:30,p:'리넨'},
+T({id:'w42',name:'아치 + 보타니컬',v:['그런즉 믿음, 소망, 사랑, 이 세 가지는 항상 있을 것인데 그 중에 제일은 사랑이라','고린도전서 13:13'],bg:{t:'pat',c:30,p:'리넨'},
  shapes:[ar(.12,.085,.76,.83,{col:'#FFF8F2'}),ar(.145,.105,.71,.79,{stroke:'#EBC8CF',lw:.0018})],
  texts:[main({f:1,col:'#5A2E3A',cy:.59,bw:.54,bh:.28}),ref({f:1,ls:.08,col:'#A0596D',cy:.815})],
  items:[st('데이지 선',.5,.285,.26,{col:'#A0596D'})]});
-T({id:'w40',name:'보타니컬 한 송이',bg:{t:'pat',c:27,p:'리넨'},
+T({id:'w40',name:'보타니컬 한 송이',v:['무릇 지킬만한 것보다 더욱 네 마음을 지키라 생명의 근원이 이에서 남이니라','잠언 4:23'],bg:{t:'pat',c:27,p:'리넨'},
  shapes:[ln(.46,.405,.54,.405,'#9AA88C')],
  texts:[main({f:1,col:'#3F3A30',cy:.59,bh:.28,va:'top'}),ref({f:1,ls:.1,col:'#7D8C6E',cy:.82})],
  items:[st('물망초 선',.5,.245,.26,{col:'#6F8062'})]});
-T({id:'w41',name:'보타니컬 옆 줄기',bg:{t:'pat',c:14,p:'리넨'},
+T({id:'w41',name:'보타니컬 옆 줄기',v:['오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니 이같은 것을 금지할 법이 없느니라','갈라디아서 5:22-23'],bg:{t:'pat',c:14,p:'리넨'},
  texts:[tx({s:"TODAY'S VERSE",f:9,size:7.5,ls:.3,al:'left',col:'#B08A72',cx:.66,cy:.3,bw:.5}),main({f:1,al:'left',col:'#4A3A32',cx:.66,cy:.5,bw:.5}),ref({f:1,ls:.08,al:'left',col:'#B08A72',cx:.66,cy:.71,bw:.5})],
  items:[st('잎 가지 선',.22,.5,.6,{col:'#A0785E',r:-.04})]});
-T({id:'w39',name:'밤하늘',bg:{t:'hex',hex:'#27314B'},
+T({id:'w39',name:'밤하늘',v:['내가 산을 향하여 눈을 들리라 나의 도움이 어디서 올꼬 나의 도움이 천지를 지으신 여호와에게서로다','시편 121:1-2'],bg:{t:'hex',hex:'#27314B'},
  shapes:[{t:'grad',c0:'rgba(80,60,120,0)',c1:'rgba(110,80,150,.55)'},dot(.14,.12),dot(.3,.22,.003),dot(.62,.1,.003),dot(.9,.3),dot(.08,.42,.003),dot(.86,.52,.003),dot(.2,.62),dot(.74,.68,.003),dot(.5,.2,.0025)],
  texts:[main({f:3,size:13,col:'#FCE9A8',cy:.42,bw:.7}),ref({f:0,ls:.12,col:'#D9D3EE',cy:.625})],
  items:[st('달과 별',.8,.13,.15),st('하늘 구름',.18,.94,.46),st('하늘 구름',.82,.95,.48),st('하늘 구름',.5,.985,.5)]});
-T({id:'w13',name:'와인 엠블럼',bg:{t:'pat',c:23,p:'리넨'},
+T({id:'w13',name:'와인 엠블럼',v:['내가 그리스도와 함께 십자가에 못 박혔나니 그런즉 이제는 내가 산 것이 아니요 오직 내 안에 그리스도께서 사신 것이라 이제 내가 육체 가운데 사는 것은 나를 사랑하사 나를 위하여 자기 몸을 버리신 하나님의 아들을 믿는 믿음 안에서 사는 것이라','갈라디아서 2:20','GALATIANS 2'],bg:{t:'pat',c:23,p:'리넨'},
  shapes:[ln(.5,.15,.5,.25,'#D9B98C',.003),ln(.47,.18,.53,.18,'#D9B98C',.003),ln(.46,.83,.54,.83,'#D9B98C')],
  texts:[tx({s:E,ro:'en',f:9,size:7.5,ls:.36,col:'#D9B98C',cy:.3}),main({f:1,col:'#F6EADF',cy:.545,bh:.34}),ref({f:1,ls:.1,col:'#E3C79E',cy:.865})]});
+/* v25 추가 6개: 스티커는 작게(폭 28~64%), 가는 테·작은 영문·곁들이 스티커로 디테일 */
+T({id:'w69',name:'꽃 자전거',v:['항상 기뻐하라\n쉬지 말고 기도하라\n범사에 감사하라','데살로니가전서 5:16-18'],bg:{t:'pat',c:33,p:'점'},
+ shapes:[{t:'rect',x:.06,y:.048,w:.88,h:.904,r:.045,stroke:'#9CC8B4',lw:.0022},ln(.46,.165,.54,.165,'#9CC8B4'),ln(.16,.905,.84,.905,'#8DB9A5',.0026)],
+ texts:[cap(.13,'#5E8C76'),main({f:3,size:13,col:'#24413A',vb:.49,bh:.27}),ref({f:3,ls:.04,col:'#5E8C76',cy:.535})],
+ items:[st('새싹 잎',.18,.875,.08,{r:-.2}),st('새싹 잎',.83,.878,.07,{r:.25}),st('꽃 자전거',.5,.755,.52)]});
+T({id:'w70',name:'등불',v:['예수께서 또 일러 가라사대 나는 세상의 빛이니 나를 따르는 자는 어두움에 다니지 아니하고 생명의 빛을 얻으리라','요한복음 8:12'],bg:{t:'pat',c:12,p:'리넨'},
+ shapes:[ar(.13,.075,.74,.85,{stroke:'#D9B98C',lw:.0022}),ar(.15,.091,.7,.818,{stroke:'#D9B98C',lw:.001}),dot(.35,.16,.003,'#F3DDAE'),dot(.66,.15,.0035,'#F3DDAE'),dot(.5,.125,.003,'#F3DDAE'),dot(.28,.36,.0025,'#F3DDAE'),dot(.72,.38,.0025,'#F3DDAE'),ln(.46,.905,.54,.905,'#D9B98C')],
+ texts:[cap(.215,'#D9B98C'),main({f:3,size:13,col:'#FBF4EC',vb:.55,bw:.54,bh:.26}),ref({f:3,ls:.04,col:'#E3C9A8',cy:.595})],
+ items:[st('등불',.5,.765,.28)]});
+T({id:'w71',name:'교회',v:['하나님은 영이시니 예배하는 자가 신령과 진정으로 예배할찌니라','요한복음 4:24'],bg:{t:'pat',c:18,p:'리넨'},
+ shapes:[ln(.1,.075,.9,.075,'#8FB0CC',.0026),ln(.1,.085,.9,.085,'#8FB0CC',.0011),ln(.08,.9,.92,.9,'#8FB0CC',.0026),ln(.46,.548,.54,.548,'#8FB0CC')],
+ texts:[cap(.135,'#5F86A0'),main({f:3,size:13,col:'#26384D',vb:.47,bh:.26}),ref({f:3,ls:.04,col:'#5F86A0',cy:.515})],
+ items:[st('나무',.2,.827,.2),st('나무',.82,.842,.15),st('교회',.5,.762,.44)]});
+T({id:'w72',name:'쉴 만한 물가',v:['여호와는 나의 목자시니 내가 부족함이 없으리로다 그가 나를 푸른 초장에 누이시며 쉴만한 물 가으로 인도하시는도다','시편 23:1-2','PSALM 23'],bg:{t:'pat',c:17,p:'점'},
+ shapes:[ln(.46,.165,.54,.165,'#9AA86A'),ln(.46,.548,.54,.548,'#9AA86A')],
+ texts:[tx({s:E,ro:'en',f:9,size:7.5,ls:.34,col:'#6F7A45',cy:.13}),main({f:3,size:13,col:'#3A4224',vb:.47,bh:.26}),ref({f:3,ls:.04,col:'#6F7A45',cy:.515})],
+ items:[st('물가',.47,.775,.64),st('덤불 속 양',.79,.665,.2)]});
+T({id:'w73',name:'아치 창문',v:['수고하고 무거운 짐진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라','마태복음 11:28'],bg:{t:'pat',c:3,p:'리넨'},
+ shapes:[...brk(.07,.07,'#C99278'),ln(.46,.525,.54,.525,'#C99278'),ln(.46,.905,.54,.905,'#C99278')],
+ texts:[main({f:3,size:13,col:'#5C3A2A',cy:.705,bh:.25,va:'top'}),ref({f:3,ls:.04,col:'#A8705E',cy:.875})],
+ items:[st('아치 창문',.5,.31,.38)]});
+T({id:'w75',name:'튤립',v:['내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라','빌립보서 4:13'],bg:{t:'pat',c:28,p:'리넨'},
+ shapes:[fr(.055,'#E3B1BC',.0024),fr(.072,'#E3B1BC',.0011),ln(.46,.175,.54,.175,'#E3B1BC')],
+ texts:[cap(.14,'#B0607A'),main({f:3,size:13,col:'#5A2E3A',vb:.5,bw:.6,bh:.27}),ref({f:3,ls:.04,col:'#B0607A',cy:.545})],
+ items:[st('튤립',.5,.76,.4)]});
 return L})();
 
 const $=id=>document.getElementById(id);
@@ -826,8 +851,11 @@ const BGC=[['#FFFFFF','#3B3440','흰색'],['#EDE3D3','#4A3F33','베이지'],['#E
  ['#F5EEE2','#4A3F33','연베이지'],['#FBF6EC','#4A3F33','아이보리'],['#86B4DC','#1F3A57','스카이블루'],['#DDB0B8','#5A2E3A','더스티 핑크'],['#F7C6D0','#6E2E3E','딸기우유'],['#C9B8E8','#3A3160','라일락'],['#DDEFE6','#24413A','민트크림'],['#E3B75A','#4E3A10','머스터드'],['#8A6A58','#FBF4EC','코코아']];   // v24: 9색 추가
 // 고르는 칸 순서: 흰색·밝은 색 → 진한 색 (번호는 저장된 작업과 맞추려고 그대로)
 const BGO=[0,28,27,1,13,31,14,2,30,15,3,16,4,34,17,5,33,18,6,19,7,29,20,8,32,21,9,10,11,12,35,22,23,24,25,26];
-const GR=[['로즈→살구','#EBA0B6','#F7D2AE'],['베이지→로즈','#F2E4CC','#E9A2B8'],['버터→살구','#F6E39A','#F4B693'],['민트→버터','#9ED8C2','#F6E39A'],['하늘→민트','#A6C8F2','#A2DFC9'],['블루→노랑','#9EC3F2','#F7E39C','#F3C9DA'],['라벤더→하늘','#C1A9EE','#A6CDF2'],['보라→노랑','#BCA6F0','#F7E2A0','#F6C6CF'],['보라→민트','#BBA4EF','#A3E3CC'],['밤 남색→자두','#232B4D','#5E3F66'],['자두→모카','#43304D','#826052'],['딥그린→블루','#2F5A45','#1E3A57']];
-const PATS=['줄노트','모눈','점','리넨','스트라이프','이중 테두리','사각 테두리','아치 테두리'];   // v24 하트 무늬 지움(예전 작업은 바탕색만 남음)
+const GR=[['로즈→살구','#EBA0B6','#F7D2AE'],['베이지→로즈','#F2E4CC','#E9A2B8'],['버터→살구','#F6E39A','#F4B693'],['민트→버터','#9ED8C2','#F6E39A'],['하늘→민트','#A6C8F2','#A2DFC9'],['블루→노랑','#9EC3F2','#F7E39C','#F3C9DA'],['라벤더→하늘','#C1A9EE','#A6CDF2'],['보라→노랑','#BCA6F0','#F7E2A0','#F6C6CF'],['보라→민트','#BBA4EF','#A3E3CC'],['밤 남색→자두','#232B4D','#5E3F66'],['자두→모카','#43304D','#826052'],['딥그린→블루','#2F5A45','#1E3A57'],
+ ['피치→분홍','#F9DCC8','#F2B8C6'],['아이보리→연분홍','#FBF6EC','#F6D3DC'],['연하늘→라벤더','#DCEBF5','#D9CEEC'],['크림→민트','#FBF3DC','#CFE8DC'],['연분홍→라일락','#F8DCE4','#D5C6EE'],['레몬→피치','#F6F0C4','#F7D9C4']];   // v25: 옅은 조합 6개 추가
+// 고르는 칸 순서(번호는 저장된 작업과 맞추려고 그대로). 색 대비가 센 4개(민트→버터 3 · 블루→노랑 5 · 보라→노랑 7 · 보라→민트 8)는 목록에서 뺌 — 예전 작업에서는 그대로 그려짐
+const GRO=[12,13,17,0,1,2,16,14,15,4,6,9,10,11];
+const PATS=['줄노트','모눈','점','리넨','스트라이프','가는 줄','체크','잔체크','이중 테두리','사각 테두리','아치 테두리'];   // v24 하트 무늬 지움(예전 작업은 바탕색만 남음)
 const FONTS=[['Pret','프리텐다드',400,1.6],['NSerif','본명조',500,1.75],['PStory','푸어스토리',400,1.55],['Gowun','고운돋움',400,1.65],['PLBlack','페이퍼로지',400,1.4],['Jalnan','잘난체',400,1.4],
  ['Dancing','Dancing',400,1.4,'en'],['Pacifico','Pacifico',400,1.5,'en'],['Luckiest','Luckiest',400,1.3,'en'],['DMSerif','DM Serif',400,1.35,'en'],['AlfaSlab','Alfa Slab',400,1.35,'en'],['Shrikhand','Shrikhand',400,1.45,'en'],['Courier','Courier Prime',400,1.4,'en'],['GVibes','Great Vibes',400,1.45,'en']];
 const lhOf=t=>t.lh||Math.max(1.1,FONTS[t.f][3]-.25);  // 행간: 직접 정한 값, 없으면 예전보다 조금 좁게
@@ -946,6 +974,9 @@ function paintBg(c,W,H,b){
   if(b.p==='점'){c.fillStyle=`rgba(${ink},${.16*k})`;const s=W/22;for(let y=s/2;y<H;y+=s)for(let x=s/2;x<W;x+=s){c.beginPath();c.arc(x,y,u*.8,0,7);c.fill()}}
   const wt=a=>`rgba(255,255,255,${dk?a*.35:a})`;
   if(b.p==='스트라이프'){const s=W/10;c.fillStyle=wt(.22);for(let x=0;x<W;x+=s)c.fillRect(x,0,s*.5,H)}
+  if(b.p==='가는 줄'){c.strokeStyle=`rgba(${ink},${.13*k})`;c.lineWidth=u*.7;const s=W/24;for(let x=s/2;x<W;x+=s){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}}   // v25
+  if(b.p==='체크'||b.p==='잔체크'){const n=b.p==='체크'?32:44,s=W/n;c.fillStyle=dk?wt(.5):lum(base)>.9?`rgba(${ink},.075)`:'rgba(255,255,255,.42)';   // v25 깅엄 체크: 세로·가로 띠를 겹침(겹친 칸이 더 진함). 한 칸 = 폰에서 약 11px / 8px
+    for(let i=0;i<n;i+=2)c.fillRect(Math.round(i*s),0,Math.ceil(s),H);for(let j=0;j*s<H;j+=2)c.fillRect(0,Math.round(j*s),W,Math.ceil(s))}
   if(b.p==='이중 테두리'){const ik=mixc(base,dk?.4:.28,dk),m=W*.055,m2=m+u*7;c.strokeStyle=ik;c.lineWidth=u*2.2;c.beginPath();c.roundRect(m,m,W-2*m,H-2*m,u*14);c.stroke();c.lineWidth=u*.9;c.beginPath();c.roundRect(m2,m2,W-2*m2,H-2*m2,u*9);c.stroke();
     [[W/2,m],[W/2,H-m]].forEach(([x,y])=>{c.fillStyle=base;c.fillRect(x-u*14,y-u*4,u*28,u*8);c.fillStyle=ik;heartP(c,x,y-u*4.2,u*8)});
     c.fillStyle=ik;[[m2,m2],[W-m2,m2],[m2,H-m2],[W-m2,H-m2]].forEach(([x,y])=>{c.beginPath();c.arc(x+(x<W/2?u*7:-u*7),y+(y<H/2?u*7:-u*7),u*1.6,0,7);c.fill()})}
@@ -1284,7 +1315,7 @@ function panel(){const P=$('panel');let h='';if(P._t)P.querySelectorAll('.strip,
   else if(S.tab==='bg'){const b=S.bg;
     h+=`<div class="seg full">${[['color','단색'],['grad','그라데이션'],['pat','무늬'],['photo','내 사진']].map(([k,n])=>`<button class="${S.seg===k?'on':''}" data-seg="${k}">${n}</button>`).join('')}</div>`;
     if(S.seg==='color')h+=`<div class="strip">${BGO.map(i=>{const c=BGC[i];return `<button class="tile ${b.t==='color'&&b.c===i?'on':''}" style="background:${c[0]}" data-bgc="${i}" aria-label="${c[2]}"></button>`}).join('')}</div>`;
-    else if(S.seg==='grad')h+=`<div class="strip">${GR.map((g,i)=>`<button class="tile ${b.t==='grad'&&b.g===i?'on':''}" style="background:linear-gradient(160deg,${g[1]},${g[3]?g[3]+',':''}${g[2]})" data-grd="${i}" aria-label="${g[0]}"></button>`).join('')}</div>`;
+    else if(S.seg==='grad')h+=`<div class="strip">${GRO.map(i=>{const g=GR[i];return `<button class="tile ${b.t==='grad'&&b.g===i?'on':''}" style="background:linear-gradient(160deg,${g[1]},${g[3]?g[3]+',':''}${g[2]})" data-grd="${i}" aria-label="${g[0]}"></button>`}).join('')}</div>`;
     else if(S.seg==='pat')h+=`<div class="strip">${PATS.map(p=>`<button class="pt ${b.t==='pat'&&b.p===p?'on':''}" data-pat="${p}"><canvas width="120" height="120" data-pc="${p}"></canvas>${p}</button>`).join('')}</div>
       <div class="strip">${BGO.map(i=>{const c=BGC[i];return `<button class="sw ${b.c===i?'on':''}" style="background:${c[0]}" data-pbc="${i}" aria-label="${c[2]}"></button>`}).join('')}</div>`;
     else{h+=`<div class="strip"><button class="tc" id="bgpick">${b.img?'사진 바꾸기':'＋ 사진 고르기'}</button>${b.img&&b.t!=='photo'?'<button class="tc" id="bguse">이 사진 쓰기</button>':''}</div>`;
@@ -1443,7 +1474,7 @@ $('pvb').onclick=async()=>{if(S.editing)closeEd();let txt='';try{if(navigator.cl
   if(txt&&pvParse(txt))pvApply(txt);else pvBox(txt)};
 
 /* ========== 앱(PWA): 설치 · 업데이트 · 자동 저장 · 최근 작업 ========== */
-const APP_V='24',NOTES="말씀 템플릿이 생겼어요!\n· [템플릿으로 시작] → 폴더로 정리 · \"말씀\" 폴더에 새 템플릿 12개\n· [말씀 붙여넣기]: 말씀노트에서 복사한 글이 본문·출처로 저절로 들어가요\n· 새 스티커 칸 \"보타니컬 선\" 13개 (색 바꾸기 됨)\n· 바탕색 9개 추가: 연베이지·아이보리·스카이블루 등\n· 고른 것은 맨 아래 줄에서 고치기·맨 앞·맨 뒤·지우기\n· 모양 칸에 기본 도형 8개, 순서·가운데 맞추기, 최근 쓴 것 지우기\n· 쓰지 않는 프레임·선 식물·예전 템플릿 5개는 정리했어요",LSK='ttukttak-card';
+const APP_V='25',NOTES="말씀 템플릿이 더 늘었어요!\n· 말씀 폴더 17개: 꽃 자전거·등불·교회·쉴 만한 물가·아치 창문·튤립 추가\n· 템플릿마다 다른 말씀이 들어 있어요 (짧은 것부터 긴 것까지)\n· 배경 무늬 3개 추가: 가는 줄 · 체크 · 잔체크\n· 그라데이션: 옅은 조합 6개 추가, 대비가 센 4개는 목록에서 뺐어요\n· \"줄무늬 + 흰 판\" 템플릿은 뺐어요 (만들어 둔 작업은 그대로 열려요)",LSK='ttukttak-card';
 const UA=navigator.userAgent,isIOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),isSamsung=/SamsungBrowser/i.test(UA);
 const inApp=/KAKAOTALK|NAVER\(|NAVER|Instagram|FBAN|FBAV|Line\/|DaumApps|BAND\/|everytimeApp|KAKAOSTORY/i.test(UA)||(isIOS&&/CriOS|FxiOS|EdgiOS/.test(UA));
 const isFile=location.protocol==='file:',standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
