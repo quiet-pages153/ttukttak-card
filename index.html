@@ -96,7 +96,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .pnh .x{position:absolute;right:-4px;top:4px;border:0;background:#F7ECEF;color:var(--deep);border-radius:99px;width:30px;height:30px;font-size:14px}
 .ordr{display:flex;gap:4px}.ordr .sep{flex:none;width:1px;background:#F1DDE3;margin:4px 3px}
 .ordr button{flex:1 1 0;min-width:0;border:1.5px solid #EBC9D3;background:#fff;border-radius:10px;font:inherit;font-size:12px;font-weight:600;color:var(--deep);padding:5px 1px;display:flex;flex-direction:column;align-items:center;gap:1px;white-space:nowrap}
-.ordr button svg{width:19px;height:19px}.ordr button:disabled{opacity:.35}
+.ordr button svg{width:19px;height:19px}.ordr.act button{flex-direction:row;justify-content:center;gap:4px;padding:8px 2px;font-size:13px}.ordr button.on{background:#FBE3EA;border-color:var(--ac)}.ordr button:disabled{opacity:.35}
 .srow{display:flex;gap:8px;overflow-x:auto;padding:2px 14px;scrollbar-width:none}.srow::-webkit-scrollbar{display:none}
 .th{flex:none;width:68px;height:68px;border-radius:12px;background:#F7EFF1;border:0;display:flex;align-items:center;justify-content:center;padding:7px;color:var(--deep)}
 .th svg,.th img,.th canvas{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}
@@ -862,7 +862,7 @@ const lhOf=t=>t.lh||Math.max(1.1,FONTS[t.f][3]-.25);  // 행간: 직접 정한 �
 const fnt=(f,px)=>`${f[2]} ${px}px "${f[0]}", "Pret"`;
 const COL=['#FFFFFF','#3B3440','#5A2E3A','#3A3160','#26384D','#4A3F33','#E58FA5','#A78BD8','#7FB0DB','#6FBFA5','#E3B649','#EBA27A','#B88468','#F4D3DA','#E4DAF4','#D3E4F2'];
 const PH=['#F9D3DD','#FFE3C9','#E6DCF7','#D3EBDD','#DCE8FB'];
-const T=1/3,MAXI=12;
+const T=1/3,MAXI=20;
 /* 콜라주 15종: [x,y,w,h,모양]  모양: ''=칸  pol=폴라로이드  arch=아치  o=엇갈림  circ=원 */
 const LAY={
  0:[[],[],[]],
@@ -1042,11 +1042,11 @@ function render(ctx,W,H,pv){const u=W/300,ov=pv===true;ctx.clearRect(0,0,W,H);
   });
   if(S.flt.k!=='none'&&FP[S.flt.k]&&!(pv&&(drag||pin))){ctx.save();ctx.setTransform(1,0,0,1,0,0);effects(ctx.canvas,S.flt.k,fstr(),S.flt.ds);ctx.restore()}
   drawShapes(ctx,W,H);
-  const drawIt=it=>{const a=artOf(it);if(!a)return;const b=ibox(it,W,H),f=b.hw*2/a._cw;ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.r);
+  const drawIt=it=>{const a=artOf(it);if(!a)return;const b=ibox(it,W,H),f=b.hw*2/a._cw;ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.r);if(it.fx)ctx.scale(-1,1);if(it.op!=null&&it.op<1)ctx.globalAlpha=it.op;   // v27 좌우 뒤집기·투명도
     if(!it.k&&!it.ol){ctx.shadowColor='rgba(0,0,0,.22)';ctx.shadowBlur=W*.015}ctx.drawImage(a,-b.hw-a._o*f,-b.hh-a._o*f,(a.naturalWidth||a.width)*f,(a.naturalHeight||a.height)*f);ctx.restore()};
   S.items.forEach(it=>{if(it.u)drawIt(it)});   // v24 it.u = 글씨 아래에 까는 장식(종이 등)
   // 글씨 (여러 개)
-  S.texts.forEach((t,ti)=>{t._b=null;const ed=S.editing&&S.tsel===ti;if(!t.s.trim()&&!ed)return;
+  const drawTx=(t,ti)=>{t._b=null;const ed=S.editing&&S.tsel===ti;if(!t.s.trim()&&!ed)return;
     const f=FONTS[t.f],maxW=W*Math.min(t.bw||.83,bdTextW(W,H));let px=t.size*W/300,lh,sp,LL,th;
     // 글씨 자동 맞춤: 상자 높이(bh)가 정해져 있으면 넘칠 때 글씨를 줄임 (템플릿용)
     for(let k=0;k<40;k++){lh=px*lhOf(t);sp=(t.ls||0)*px;ctx.font=fnt(f,px);LL=[];t.s.split('\n').forEach(pp=>wrap(ctx,pp,maxW,sp).forEach(l=>LL.push(l)));th=LL.length*lh;if(!t.bh||th<=t.bh*H||px<=8*W/300)break;px*=.95}
@@ -1063,9 +1063,10 @@ function render(ctx,W,H,pv){const u=W/300,ov=pv===true;ctx.clearRect(0,0,W,H);
       if(al==='justify'&&ch.length>1){ctx.textAlign='left';const sw=ch.reduce((a,w)=>a+ctx.measureText(w).width,0),g=(wm-sw)/(ch.length-1);let xx=bx;ch.forEach(w=>{st?ctx.strokeText(w,xx,y):ctx.fillText(w,xx,y);xx+=ctx.measureText(w).width+g})}
       else spText(ctx,l,x,y,al,sp,st)});
     if(!ed){if(t.ol){ctx.strokeStyle=t.ol===2?'#1E1B2E':'#FFFFFF';ctx.lineWidth=px*(t.ow||4)*.036;ctx.lineJoin='round';ctx.miterLimit=2;pass(true);ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0}pass(false)}
-    ctx.restore();t._b={x:bx-W*.02,y:top-W*.02,w:wm+W*.04,h:th+W*.04};t._c={x:cc.x,y:cc.y,hw:t._b.w/2,hh:t._b.h/2,r:rr}});
+    ctx.restore();t._b={x:bx-W*.02,y:top-W*.02,w:wm+W*.04,h:th+W*.04};t._c={x:cc.x,y:cc.y,hw:t._b.w/2,hh:t._b.h/2,r:rr}};
   // 꾸미기
-  S.items.forEach(it=>{if(!it.u)drawIt(it)});
+  // v26 글씨·꾸미기를 한 줄 순서(z)로. 고치는 중인 글씨는 맨 위에
+  {let edT=null;zlist().forEach(o=>{if(o.t){if(S.editing&&S.tsel===o.i)edT=o;else drawTx(o.t,o.i)}else drawIt(o.it)});if(edT)drawTx(edT.t,edT.i)}
   if(ov&&!S.editing)drawSel(ctx,W,H);
 }
 /* 템플릿 도형: 글씨 아래에 깔림, 누를 수 없음 */
@@ -1143,9 +1144,10 @@ cv.addEventListener('pointerdown',e=>{if(SH.k){SH.close();return}if(S.editing){c
     if(Math.hypot(pt.x-d.x,pt.y-d.y)<16*u){S.items.splice(S.isel,1);S.isel=null;panel();draw();return}
     if(Math.hypot(pt.x-q.x,pt.y-q.y)<18*u){drag={m:'sr',it:it0,c:{x:b.x,y:b.y},d0:Math.max(8*u,Math.hypot(pt.x-b.x,pt.y-b.y)),a0:Math.atan2(pt.y-b.y,pt.x-b.x),w0:it0.w,r0:it0.r||0};return}}
   const st=S.texts[S.tsel],sb=!lk&&st&&st._c;if(sb){const q=wpt(sb,sb.hw,sb.hh);if(Math.hypot(pt.x-q.x,pt.y-q.y)<20*u){drag={m:'tz',t:st,c:{x:sb.x,y:sb.y},d0:Math.max(20,Math.hypot(pt.x-sb.x,pt.y-sb.y)),a0:Math.atan2(pt.y-sb.y,pt.x-sb.x),s0:st.size,r0:st.r||0};return}}
-  const hitIt=un=>{for(let i=S.items.length-1;i>=0;i--){const it=S.items[i];if(ILK(it)||!!it.u!==un)continue;const b=ibox(it,W,H),l=loc(pt,b);if(Math.abs(l.x)<b.hw&&Math.abs(l.y)<b.hh){const ch=S.isel!==i||S.tab!=='dc';selOnly('it',i);drag={m:'mv',it,dx:pt.x-it.x*W,dy:pt.y-it.y*H};if(ch)panel();draw();return true}}return false};
-  if(hitIt(false))return;
-  for(let i=S.texts.length-1;i>=0;i--){const t=S.texts[i],q=t._c;if(!q)continue;const l=loc(pt,q);if(Math.abs(l.x)<=q.hw&&Math.abs(l.y)<=q.hh){const was=S.tsel===i&&S.tab==='tx';selOnly('tx',i);drag={m:'tx',t,dx:pt.x-t.cx*W,dy:pt.y-t.cy*H,p0:pt,mv:0,was,lk};if(!was)panel();draw();return}}
+  const hitI=i=>{const it=S.items[i];if(ILK(it))return false;const b=ibox(it,W,H),l=loc(pt,b);if(Math.abs(l.x)<b.hw&&Math.abs(l.y)<b.hh){const ch=S.isel!==i||S.tab!=='dc';selOnly('it',i);drag={m:'mv',it,dx:pt.x-it.x*W,dy:pt.y-it.y*H};if(ch)panel();draw();return true}return false};
+  const hitT=i=>{const t=S.texts[i],q=t._c;if(!q)return false;const l=loc(pt,q);if(Math.abs(l.x)<=q.hw&&Math.abs(l.y)<=q.hh){const was=S.tsel===i&&S.tab==='tx';selOnly('tx',i);drag={m:'tx',t,dx:pt.x-t.cx*W,dy:pt.y-t.cy*H,p0:pt,mv:0,was,lk};if(!was)panel();draw();return true}return false};
+  const hitIt=un=>{for(let i=S.items.length-1;i>=0;i--)if(!!S.items[i].u===un&&hitI(i))return true;return false};
+  {const ZL=zlist();for(let j=ZL.length-1;j>=0;j--){const o=ZL[j];if(o.t?hitT(o.i):hitI(o.i))return}}   // v26 위에 있는 것부터
   if(hitIt(true))return;   // v24 글씨 아래에 깔린 장식은 글씨 다음
   const any=S.isel!=null||S.tsel!=null||S.sel!=null;
   if(S.tab==='bg'&&S.bg.t==='photo'&&S.bg.img){if(any){selOnly(null);draw()}drag={m:'bgpan',p0:pt,ox:S.bg.ox||0,oy:S.bg.oy||0,mv:0};return}
@@ -1173,7 +1175,7 @@ cv.addEventListener('pointermove',e=>{if(P2.has(e.pointerId))P2.set(e.pointerId,
   const p=S.ph[drag.i];if(!p||drag.m!=='pan')return;
   const b=box(cells(W,H)[drag.i]),im=p.base,sc=Math.max(b.w/im.width,b.h/im.height)*p.z,sx=b.w-im.width*sc,sy=b.h-im.height*sc;let dx=pt.x-drag.p0.x;if(p.fl)dx=-dx;
   p.ox=sx?Math.max(-1,Math.min(1,drag.ox+dx*2/sx)):0;p.oy=sy?Math.max(-1,Math.min(1,drag.oy+(pt.y-drag.p0.y)*2/sy)):0;draw()});
-['pointerup','pointercancel'].forEach(ev=>cv.addEventListener(ev,e=>{P2.delete(e.pointerId);const hp=pin;if(P2.size<2)pin=null;const d=drag;drag=null;
+['pointerup','pointercancel'].forEach(ev=>cv.addEventListener(ev,e=>{P2.delete(e.pointerId);const hp=pin;if(P2.size<2)pin=null;const d=drag;drag=null;blurTip(d&&d.m==='sr'?d.it:hp&&hp.m==='it'?hp.it:null);
   if(hp&&!pin){if(hp.m==='vz'){if(VZ.z<1.05)resetVZ(false);setRes()}else draw()}
   else if(d&&d.m)draw();if(e.type!=='pointerup'||!d)return;
   const tap=d.mv!=null&&d.mv<SZ()[0]*.02;
@@ -1205,13 +1207,13 @@ $('bgfile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f
 /* v1.8.4 고른 것이 있고 도구 칸·시트가 닫혀 있으면, 아래 줄이 같은 높이의 [고치기·…·완료] 줄로 바뀜 (카드 크기 그대로) */
 let _cbk='';
 function cbar(){const B=$('cbar');if(!B)return;const it=S.isel!=null?S.items[S.isel]:null,tx=S.tsel!=null?S.texts[S.tsel]:null,ph=S.sel!=null&&S.ph&&S.ph[S.sel];
-  const on=!PN&&!SH.k&&!S.editing&&!!(it||tx||ph),n=S.items.length,k=S.isel;
-  const L=!on?[]:it?[['edit','고치기'],['top','맨 앞',k===n-1],['bot','맨 뒤',k===0],['del','지우기'],['done','완료']]:tx?[['ted','글씨 고치기'],['edit','글꼴·색'],['tdl','지우기'],['done','완료']]:[['edit','사진 도구'],['phre','바꾸기'],['done','완료']];
+  const on=!PN&&!SH.k&&!S.editing&&!!(it||tx||ph),n=S.items.length,k=S.isel,zp=on&&(it||tx)?zpos(it||tx):[0,0];
+  const L=!on?[]:it?[['edit','고치기'],['up','앞으로',zp[0]===zp[1]-1],['down','뒤로',zp[0]<=0],['del','지우기'],['done','완료']]:tx?[['ted','글씨 고치기'],['edit','글꼴·색'],['up','앞으로',zp[0]===zp[1]-1],['down','뒤로',zp[0]<=0],['tdl','지우기'],['done','완료']]:[['edit','사진 도구'],['phre','바꾸기'],['done','완료']];
   const key=on+JSON.stringify(L);if(key===_cbk)return;_cbk=key;B.hidden=!on;$('tabs').hidden=on;
   B.innerHTML=L.map(([a,t,d])=>`<button data-cb="${a}" ${d?'disabled':''} class="${a==='done'?'on':''}">${t}</button>`).join('')}
 $('cbar').onclick=e=>{const b=e.target.closest('[data-cb]');if(!b||b.disabled)return;const a=b.dataset.cb,L=S.items,k=S.isel;
   if(a==='edit'){pnShow(true);panel();return}
-  if(a==='top'){L.push(L.splice(k,1)[0]);S.isel=L.length-1}else if(a==='bot'){L.unshift(L.splice(k,1)[0]);S.isel=0}
+  if(a==='up'||a==='down'){zmove(k!=null&&L[k]?L[k]:S.texts[S.tsel],a)}
   else if(a==='del'){L.splice(k,1);S.isel=null}else if(a==='tdl'){S.texts.splice(S.tsel,1);S.tsel=null}
   else if(a==='ted'){openEd();return}else if(a==='phre'){pick(S.sel,false);return}else if(a==='done'){selOnly(null)}
   panel();draw()};
@@ -1238,7 +1240,15 @@ const alive=it=>it.k==='l'?!!TXS[it.i]:it.k==='s'?!!STK[it.i]&&!STK[it.i].del:!!
 // 색이 정해진 칸 (아무것도 안 골랐을 때 색 줄 숨김)
 const FIXT=['char','sheep','bible','nature','props','season','floral'];
 // 그림 그대로 넣은 스티커는 원본의 1.2배까지만 커짐 (1080px 카드 기준) → 흐려지지 않게
-const stMaxW=it=>{const t=it&&it.k==='s'&&STK[it.i];return t&&t.px?Math.min(.9,t.px*1.2/1080):.9};
+const stMaxW=it=>{const t=it&&it.k==='s'&&STK[it.i];return 1.5};   // v26_2 모든 스티커 카드 폭 150%까지(그림 스티커는 흐려짐 안내)
+const stInsW=i=>{const t=STK[i];return t&&t.px?Math.min(.9,t.px*1.2/1080):.9};
+let _bt=0;function blurTip(it){const t=it&&it.k==='s'&&STK[it.i];if(t&&t.px&&!_bt&&it.w>t.px*1.2/1080+1e-6){_bt=1;toast('그림 스티커는 크게 하면 흐려질 수 있어요')}}
+// v26 순서: 글씨와 꾸미기(글씨 아래 장식 it.u 빼고)를 z 숫자 하나로. z 없는 예전 작업 = 글씨가 아래, 새로 넣은 것 = 맨 위
+function zfix(s){s=s||S;const A=s.texts.concat(s.items.filter(i=>!i.u));let m=-1;A.forEach(o=>{if(typeof o.z==='number'&&o.z>m)m=o.z});A.forEach(o=>{if(typeof o.z!=='number')o.z=++m})}
+function zlist(){zfix();const L=[];S.texts.forEach((t,i)=>L.push({t,i,z:t.z,o:0}));S.items.forEach((it,i)=>{if(!it.u)L.push({it,i,z:it.z,o:1})});return L.sort((a,b)=>a.z-b.z||a.o-b.o||a.i-b.i)}
+function zpos(o){const L=zlist();return [L.findIndex(e=>(e.t||e.it)===o),L.length]}
+function zmove(o,A){const L=zlist(),k=L.findIndex(e=>(e.t||e.it)===o),n=L.length;if(k<0)return;const j=A==='top'?n-1:A==='bot'?0:A==='up'?k+1:k-1;if(j<0||j>=n||j===k)return;
+  L.splice(j,0,L.splice(k,1)[0]);L.forEach((e,i)=>{(e.t||e.it).z=i});const sel=S.isel!=null?S.items[S.isel]:null;S.items.sort((a,b)=>(!!b.u-!!a.u)||((a.z||0)-(b.z||0)));if(sel)S.isel=S.items.indexOf(sel);_cbk=''}
 // 칸 안 순서: 새 구분선·도구(first)를 앞에
 /* ---------- v1.8 꾸미기 시트: 검색 · 최근 쓴 것 · 칸마다 한 줄 + 모두 보기(5칸) ----------
    k: 0 닫힘, 1 절반(카드는 시트 위로 작아짐), 2 전체. 폰 뒤로 버튼: 모두 보기 → 목록 → 닫힘 (history.state.sh) */
@@ -1275,7 +1285,7 @@ const SH=(()=>{const G=[['ic','아이콘'],['deco','선·밑줄'],['floral','꽃
   o.add=k=>{if(S.items.length>=MAXI){toast('한 장에 '+MAXI+'개까지 넣을 수 있어요');return false}const i=+k.slice(1),c=k[0];let it;
     if(c==='i')it={i,x:.5,y:.5,w:.14,col:S.icol,r:0};
     else if(c==='l')it={k:'l',i,x:.5,y:.5,w:TXS[i].g==='word'?.42:.4,col:null,r:0};
-    else{const t=STK[i],big=t.g==='frame'&&!/모서리/.test(t.n);it={k:'s',i,x:.5,y:.5,w:Math.min(big?.84:t.iw||.24,stMaxW({k:'s',i})*(big?1:.85)),col:t.cf?null:S.scol||null,r:0}}
+    else{const t=STK[i],big=t.g==='frame'&&!/모서리/.test(t.n);it={k:'s',i,x:.5,y:.5,w:Math.min(big?.84:t.iw||.24,stInsW(i)*(big?1:.85)),col:t.cf?null:S.scol||null,r:0}}
     if(!(c==='s'&&STK[i].g==='frame'&&!/모서리/.test(STK[i].n))){const [W,H]=SZ(),st=.07;   // v1.8.4 (카드 폭의 7% ≈ 폰에서 24px, 시트가 열려 카드가 작아져도 같은 비율) 겹쳐 쌓이지 않게: 가운데 → 오른쪽 아래 → 왼쪽 아래 → 오른쪽 위 → 왼쪽 위 → 두 칸씩 … (폰 화면에서 약 24px)
       const SP=[[0,0],[1,1],[-1,1],[1,-1],[-1,-1],[2,2],[-2,2],[2,-2],[-2,-2],[0,2],[2,0],[0,-2],[-2,0],[3,3],[-3,3],[3,-3],[-3,-3]];
       const taken=(x,y)=>S.items.some(o=>Math.abs(o.x-x)*W<st*W*.6&&Math.abs(o.y-y)*H<st*W*.6);
@@ -1323,6 +1333,7 @@ function panel(){const P=$('panel');let h='';if(P._t)P.querySelectorAll('.strip,
       else h+=`<p class="tip">사진을 고르면 끌어서 위치를 옮길 수 있어요.</p>`}}
   else if(S.tab==='tx'){const t=S.texts[S.tsel];
     h+=`<div class="strip">${S.texts.map((x,i)=>`<button class="tc ${i===S.tsel?'on':''}" data-ti="${i}">${esc((x.s.trim().split('\n')[0]||'빈 글씨').slice(0,7))}</button>`).join('')}${S.texts.length<MAXT?'<button class="tc add" id="tadd">＋ 추가</button>':''}${t?'<button class="tc" id="tedit" aria-label="글 고치기">✎ 고치기</button><button class="tc" id="tdel" aria-label="이 글씨 삭제">삭제</button>':''}</div>`;
+    if(t){const [zk,zn]=zpos(t),tb=(a,x,d)=>`<button data-tord="${a}" ${d?'disabled':''}>${x}</button>`;h+=`<div class="ordr act">${tb('top','맨 앞',zk===zn-1)}${tb('up','앞으로',zk===zn-1)}${tb('down','뒤로',zk<=0)}${tb('bot','맨 뒤',zk<=0)}</div>`}   // v27 글씨 순서
     if(!t)h+=`<p class="tip">${S.texts.length?'고칠 글씨를 위에서 고르거나 사진 위 글씨를 눌러요.':'＋ 추가를 누르면 사진 위에 바로 쓸 수 있어요.'}</p>`;
     else{const tt=S.ttool||'font';h+=`<div class="tools">${TOOLS.map(([k,i,n])=>`<button class="${k===tt?'on':''}" data-tool="${k}"><b>${i}</b>${n}</button>`).join('')}</div>`;
       if(tt==='font')h+=`<div class="strip">${fontStrip(t)}</div><p class="tip" style="font-size:10.5px">Aa는 영문 글꼴(한글은 프리텐다드로 나와요) · 잘난체: ㈜여기어때컴퍼니 제공</p>`;
@@ -1341,7 +1352,8 @@ function panel(){const P=$('panel');let h='';if(P._t)P.querySelectorAll('.strip,
     h+=(fixed||!sel)?'':`<div class="strip"><div class="seg sm">${[['p','파스텔'],['r','레트로']].map(([k,t])=>`<button class="${(S.pal||'p')===k?'on':''}" data-pal="${k}">${t}</button>`).join('')}</div>${selS?`<button class="sw rst ${!cur?'on':''}" data-icc="" aria-label="원래 색">↺</button>`:''}${sws(cur,'data-icc',S.pal==='r'?RETRO:COL)}</div>`;
     if(sel){const k=S.isel,n=S.items.length,I={top:'<rect x="8" y="3" width="13" height="13" rx="2" fill="currentColor"/><rect x="3" y="8" width="13" height="13" rx="2" fill="#fff" stroke="currentColor" stroke-width="2"/>',up:'<path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',down:'<path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',bot:'<rect x="3" y="8" width="13" height="13" rx="2" fill="currentColor"/><rect x="8" y="3" width="13" height="13" rx="2" fill="#fff" stroke="currentColor" stroke-width="2"/>',ch:'<path d="M12 3v18" stroke="currentColor" stroke-width="2"/><rect x="5" y="7" width="14" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="14" width="8" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>',cv:'<path d="M3 12h18" stroke="currentColor" stroke-width="2"/><rect x="7" y="5" width="4" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="8" width="4" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>'};
       const ob=(a,t,d)=>`<button data-ord="${a}" ${d?'disabled':''} aria-label="${t}"><svg viewBox="0 0 24 24">${I[a]}</svg>${t}</button>`;
-      h+=`<div class="ordr">${ob('top','맨 앞',k===n-1)}${ob('up','앞으로',k===n-1)}${ob('down','뒤로',k===0)}${ob('bot','맨 뒤',k===0)}<span class="sep"></span>${ob('ch','가로 중앙')}${ob('cv','세로 중앙')}</div>`}
+      const [zk,zn]=zpos(S.items[S.isel]);h+=`<div class="ordr">${ob('top','맨 앞',zk===zn-1)}${ob('up','앞으로',zk===zn-1)}${ob('down','뒤로',zk<=0)}${ob('bot','맨 뒤',zk<=0)}<span class="sep"></span>${ob('ch','가로 중앙')}${ob('cv','세로 중앙')}</div>`;
+      h+=`<div class="ordr act">${selL?'':`<button data-iact="flip" class="${sel.fx?'on':''}">↔ 좌우 뒤집기</button>`}<button data-iact="dup" ${full?'disabled':''}>⧉ 복제</button></div><div class="olr"><span class="lab">투명도</span><input type="range" id="iop" min="10" max="100" step="5" value="${Math.round((sel.op==null?1:sel.op)*100)}" aria-label="투명도"></div>`}
     if(sel){h+=`<div class="olr"><span class="lab">테두리</span><div class="seg sm">${['없음','흰색','검정'].map((t,i)=>`<button class="${(sel.ol||0)===i?'on':''}" data-iol="${i}">${t}</button>`).join('')}</div>${sel.ol?`<input type="range" id="iow" min="1" max="10" value="${sel.ow||4}" aria-label="테두리 두께">`:''}</div>`}
 }
   P.innerHTML=h;P._t=S.tab;txThumbs();P.querySelectorAll('.strip,.igrid').forEach((el,i)=>{const v=SCRL[S.tab+skey(el,i)];if(v){if(el.classList.contains('igrid'))el.scrollTop=v;else el.scrollLeft=v}});$('scr').scrollTop=sy;bind()}
@@ -1376,9 +1388,13 @@ function bind(){const P=$('panel'),on=(q,f)=>P.querySelectorAll(q).forEach(b=>b.
   on('[data-tc]',b=>{T().col=b.dataset.tc;R()});const tcp=$('tcp');if(tcp)tcp.oninput=()=>{T().col=tcp.value;draw()};
   range('tz',v=>{T().size=v;draw()});range('tls',v=>{T().ls=v/100;draw()});range('tlh',v=>{T().lh=v/100;draw()});
   on('[data-al]',b=>{T().al=b.dataset.al;R()});on('[data-sh]',b=>{T().sh=+b.dataset.sh;R()});
+  on('[data-tord]',b=>{const t=S.texts[S.tsel];if(t){zmove(t,b.dataset.tord);R()}});
+  on('[data-iact]',b=>{const L=S.items,it=L[S.isel];if(!it)return;
+    if(b.dataset.iact==='flip'){if(it.fx)delete it.fx;else it.fx=1}
+    else{if(L.length>=MAXI){toast('한 장에 '+MAXI+'개까지 넣을 수 있어요');return}const c=JSON.parse(JSON.stringify(it));delete c.z;delete c.tp;delete c.u;c.x=Math.min(.95,it.x+.07);c.y=Math.min(.95,it.y+.07);L.push(c);S.isel=L.length-1}
+    R()});
   on('[data-ord]',b=>{const A=b.dataset.ord,L=S.items,k=S.isel;if(k==null||!L[k])return;const it=L[k];   // v1.8.4 순서·정렬
-    if(A==='top'){L.push(L.splice(k,1)[0]);S.isel=L.length-1}else if(A==='bot'){L.unshift(L.splice(k,1)[0]);S.isel=0}
-    else if(A==='up'&&k<L.length-1){[L[k],L[k+1]]=[L[k+1],L[k]];S.isel=k+1}else if(A==='down'&&k>0){[L[k],L[k-1]]=[L[k-1],L[k]];S.isel=k-1}
+    if(A==='top'||A==='bot'||A==='up'||A==='down')zmove(it,A);
     else if(A==='ch')it.x=.5;else if(A==='cv')it.y=.5;R()});
   P.querySelectorAll('[data-rx]').forEach(x=>x.onclick=e=>{e.stopPropagation();SH.delRecent(x.dataset.rx);panel()});const rc=$('rclr');if(rc)rc.onclick=()=>{SH.delRecent();panel()};
   on('[data-radd]',b=>SH.add(b.dataset.radd));const da=$('dcAdd');if(da)da.onclick=()=>SH.open();
@@ -1387,6 +1403,7 @@ function bind(){const P=$('panel'),on=(q,f)=>P.querySelectorAll(q).forEach(b=>b.
   const ltx=$('ltx');if(ltx){ltx.oninput=()=>{const it=S.items[S.isel];if(it&&it.k==='l'){it.txt=ltx.value;ltx.rows=Math.min(3,Math.max(1,ltx.value.split('\n').length));draw()}};ltx.onkeydown=e=>{const it=S.items[S.isel],one=it&&it.k==='l'&&TXS[it.i].g==='curve';if(e.key==='Enter'&&(one||ltx.value.split('\n').length>=3))e.preventDefault()}}
   on('[data-dg]',b=>{S.dseg=b.dataset.dg;panel()});on('[data-pal]',b=>{S.pal=b.dataset.pal;panel()});
   on('[data-iol]',b=>{const it=S.items[S.isel];if(it){it.ol=+b.dataset.iol;if(!it.ow)it.ow=4}R()});
+  const iop=$('iop');if(iop)iop.oninput=()=>{const it=S.items[S.isel];if(it){const v=+iop.value/100;if(v>=1)delete it.op;else it.op=v;draw()}};
   const iow=$('iow');if(iow)iow.oninput=()=>{const it=S.items[S.isel];if(it){it.ow=+iow.value;draw()}};
   on('[data-tol]',b=>{T().ol=+b.dataset.tol;if(!T().ow)T().ow=4;R()});range('tow',v=>{T().ow=v;draw()});
 }
@@ -1420,7 +1437,7 @@ $('goCol').onclick=()=>openCol('col');
 /* ---------- 템플릿 ---------- */
 function tplState(T){const n=fresh();Object.assign(n,{mode:T.mode,size:T.size,n:T.mode==='card'?0:T.n,k:T.k||0,gap:T.gap??1,frame:0,tab:T.mode==='card'?'tx':'ph',shapes:JSON.parse(JSON.stringify(T.shapes||[])),
   texts:JSON.parse(JSON.stringify(T.texts)),items:JSON.parse(JSON.stringify(T.items||[])).filter(alive).map(it=>T.mine?it:Object.assign(it,{tp:1})),tpl:{id:T.id,lock:!T.mine},sizeSet:true});Object.assign(n.bg,T.bg);
-  n._init=JSON.stringify(n.texts.map(t=>t.s));n._initI=JSON.stringify(n.items);return n}
+  zfix(n);n._init=JSON.stringify(n.texts.map(t=>t.s));n._initI=JSON.stringify(n.items);return n}
 function tplFonts(){return Promise.all(FONTS.map(f=>document.fonts.load(fnt(f,20),'가A1')).concat([document.fonts.load('600 12px Pret','1')])).catch(()=>{})}
 let tpOpen=false;
 // 내 템플릿: 최근 작업에서 ☆로 저장 (사진은 빼고 배경·글씨·스티커·도형) · 폰 안(localStorage)에 12개까지
@@ -1474,7 +1491,7 @@ $('pvb').onclick=async()=>{if(S.editing)closeEd();let txt='';try{if(navigator.cl
   if(txt&&pvParse(txt))pvApply(txt);else pvBox(txt)};
 
 /* ========== 앱(PWA): 설치 · 업데이트 · 자동 저장 · 최근 작업 ========== */
-const APP_V='25',NOTES="말씀 템플릿이 더 늘었어요!\n· 말씀 폴더 17개: 꽃 자전거·등불·교회·쉴 만한 물가·아치 창문·튤립 추가\n· 템플릿마다 다른 말씀이 들어 있어요 (짧은 것부터 긴 것까지)\n· 배경 무늬 3개 추가: 가는 줄 · 체크 · 잔체크\n· 그라데이션: 옅은 조합 6개 추가, 대비가 센 4개는 목록에서 뺐어요\n· \"줄무늬 + 흰 판\" 템플릿은 뺐어요 (만들어 둔 작업은 그대로 열려요)",LSK='ttukttak-card';
+const APP_V='27',NOTES="꾸미기가 더 자유로워졌어요!\n· 스티커를 글씨 뒤로 보낼 수 있어요 — 고른 뒤 아래 줄의 [뒤로]\n· 글씨도 순서를 바꿀 수 있어요 (맨 앞 · 앞으로 · 뒤로 · 맨 뒤)\n· 스티커를 훨씬 크게 키울 수 있어요 (그림 스티커는 크게 하면 조금 흐려져요)\n· 스티커 [고치기]에 좌우 뒤집기 · 복제 · 투명도가 생겼어요\n· 한 장에 스티커 20개까지 넣을 수 있어요",LSK='ttukttak-card';
 const UA=navigator.userAgent,isIOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),isSamsung=/SamsungBrowser/i.test(UA);
 const inApp=/KAKAOTALK|NAVER\(|NAVER|Instagram|FBAN|FBAV|Line\/|DaumApps|BAND\/|everytimeApp|KAKAOSTORY/i.test(UA)||(isIOS&&/CriOS|FxiOS|EdgiOS/.test(UA));
 const isFile=location.protocol==='file:',standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
