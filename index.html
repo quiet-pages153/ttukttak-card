@@ -146,7 +146,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .th{position:relative}.th .rx{position:absolute;top:-5px;right:-5px;width:20px;height:20px;border-radius:50%;background:#8A7A80;color:#fff;font-size:11px;line-height:20px;text-align:center;box-shadow:0 0 0 2px #fff}
 .rlab .rclr{border:0;background:none;color:var(--ac);font:inherit;font-size:12.5px;font-weight:600;float:right;padding:0}
 .srow,.rrow{padding-top:7px!important}
-.th.wide{width:112px}.th.wd{flex-direction:column;gap:2px;padding:5px 6px}.th.wd canvas{height:auto;flex:1;min-height:0}.th small{font-size:10.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.2}
+.th.wide{width:112px}.th.wd{flex-direction:column;gap:2px;padding:5px 6px}.th.wd canvas{height:auto;flex:1;min-height:0}
+.pop .pdg .psub{grid-column:1/-1;position:sticky;top:0;z-index:1;margin:0;padding:5px 4px 3px;background:#fff;font-size:11.5px;font-weight:600;color:var(--deep)}   /* v35 칸 안 작은 제목(그림체) */
+.pop .pdg.wv{grid-template-columns:repeat(2,minmax(0,1fr))}.pop .pdg.wv .th{aspect-ratio:auto;height:96px}.th.vs small{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-align:center;word-break:keep-all}.th small{font-size:10.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.2}
 .sgrid.w3{grid-template-columns:repeat(3,1fr)}.sgrid.w2{grid-template-columns:repeat(2,1fr)}.sgrid.w2 .th{aspect-ratio:auto;height:78px}.sgrid.w3 .th{aspect-ratio:auto;height:72px}.sgrid .th.wide{width:auto}
 .sempty{padding:30px 14px;color:var(--sub);text-align:center}
 .dcadd{display:flex;gap:8px;align-items:center;margin:2px 0 10px}.dcadd .dcb{flex:1;border:0;border-radius:14px;background:var(--ac);color:#fff;font:inherit;font-size:15px;font-weight:600;padding:12px 10px}
@@ -1016,6 +1018,20 @@ if(t.first)t.g='tool';if(t.g==='tool'&&DECO.includes(t.n))t.g='deco';if(t.g==='c
 // v34 칸 정리 시작 (art/add34.py) — 하트가 주인공인 스티커는 하트 칸으로(번호·색 고정 그대로)
 if(L[21]&&L[21].n==="하트")L[21].g='heart';if(L[126]&&L[126].n==="하트 둘")L[126].g='heart';if(L[130]&&L[130].n==="하트 말풍선")L[130].g='heart';if(L[162]&&L[162].n==="분홍 하트")L[162].g='heart';if(L[163]&&L[163].n==="노란 하트")L[163].g='heart';if(L[164]&&L[164].n==="파란 하트")L[164].g='heart';if(L[224]&&L[224].n==="하트 십자가")L[224].g='heart';if(L[240]&&L[240].n==="하트 선")L[240].g='heart';if(L[241]&&L[241].n==="하트 속 십자가")L[241].g='heart';if(L[477]&&L[477].n==="하트 풍선 다발")L[477].g='heart';if(L[485]&&L[485].n==="하트 가랜드")L[485].g='heart';
 // v34 칸 정리 끝
+// v35 칸 정리 시작 (art/add35.py) — 사용자가 고른 삭제 23개(번호 자리만 남김) · 반짝 선 → 하트 칸
+[[494,"위치 핀"],[495,"지도 위치 핀"],[3,"반짝 둘"],[7,"번개 하늘"],[8,"반짝이 분홍"],[11,"데이지"],[351,"기본 직사각"],[56,"남자"],[57,"여자"],[58,"커플"],[536,"목도리 소년"],[537,"걷는 청년"],[541,"웃는 청년"],[552,"곱슬머리 소년"],[92,"큰 따옴표"],[93,"빈 말풍선"],[94,"네모 말풍선"],[214,"끈 태그"],[304,"전구 줄"],[305,"파스텔 가랜드"],[306,"분홍 리본"],[294,"눈사람"],[296,"양말"]].forEach(([i,n])=>{if(L[i]&&L[i].n===n)L[i]={g:'hide',n,s:'',del:1,w:1,h:1}});
+if(L[127]&&L[127].n==="반짝 선")L[127].g='heart';
+{const R=(a,z)=>Array.from({length:z-a+1},(_,k)=>a+k),IN=(i,...A)=>A.some(x=>Array.isArray(x)?x.includes(i):x===i);
+ const FACE=R(38,47),FLW_B=[72,73,74,75],SKY_N=[157,158,159,160,...R(179,190),219],SKY_C=[437,438,439,440,447,448],PRP_C=[442,443,446],FLW_C=[444,445];
+ L.forEach((t,i)=>{if(t.g==='hide')return;const g=t.g;let c=g;
+  if(g==='winter')c='xmas';else if(g==='smile')c='face';else if(g==='char')c=IN(i,FACE)?'face':'animal';else if(g==='sheep')c='animal';
+  else if(g==='line')c=IN(i,R(51,55))?'bible':'people';else if(g==='bible')c=IN(i,FLW_B)?'flower':'bible';
+  else if(g==='nature')c=IN(i,SKY_N)?'sky':'flower';else if(g==='floral')c=IN(i,R(324,347))?'deco':'flower';else if(g==='botline')c=t.n==='벚꽃 구분선'?'deco':'flower';
+  else if(g==='country')c=IN(i,SKY_C)?'sky':IN(i,PRP_C)?'props':IN(i,FLW_C)?'flower':'people';
+  t.cat=c;
+  t.sty=g==='deco'?'선·밑줄':g==='floral'&&c==='deco'?'꽃 구분선':t.r?(IN(i,R(179,190))?'사진':IN(i,R(196,208),R(213,218),[348,349])?'종이·질감':IN(i,R(209,212),[219],R(457,471))?'수채':IN(i,R(435,448))?'클래식 그림':IN(i,R(449,456))?'그림':'동화 그림')
+   :(t.rc||g==='line'||g==='botline'||c==='ic')?'선 그림':'그림'})}
+// v35 칸 정리 끝
 return L})();
 const RETRO=['#F2542D','#F7795F','#E63946','#F0628A','#FF4FA3','#FF77B5','#FF9CC7','#D99FE0','#B79CF2','#7E63D9','#2457E6','#3F8CEB','#5EC8F2','#3FC1B0','#17A398','#22A673','#2FA84F','#7DBB3E','#9BB33A','#C9B23A','#E9B03A','#FFC83A','#FFD23F','#FFB067','#FF8A3D','#C8703F','#8C5A3C','#E8CFA8','#FFF1D6','#8A8794','#1E1B2E'];
 const lumH=h=>{const n=parseInt(h.slice(1),16);return((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/255000};
@@ -1073,6 +1089,29 @@ const FN={Dan:'Dancing',Pac:'Pacifico',DMS:'DMSerif',Alfa:'AlfaSlab',Shr:'Shrikh
  ['Praise','Shr','#F2542D','spark',38,'찬양'],['Blessed','Pac','#FF4FA3','heart',36,'복 받은, 은혜 입은'],['Trust','DMS','#2457E6','',40,'신뢰, 의지함'],['Pray','Dan','#8C5A3C','heart',42,'기도하다'],
  ['Light','Alfa','#FFB000','sun',38,'빛'],['Mercy','DMS','#E63946','heart',40,'자비, 긍휼'],['Truth','Alfa','#2457E6','',38,'진리'],['Holy','DMS','#1E1B2E','spark',42,'거룩한']]
  .forEach(([t,f,c,dc,sz,mean],k)=>L.push({g:'word',n:t,t,f:FN[f],c,dc,sz,mean,faith:k>=16}));
+// v35 말씀 텍스트 시작 (art/add35_verse.py)
+[["Glory to God", "GVibes", "#B8862E", "spark", 46, "하나님께 영광을", "누가복음 2:14"],
+ ["Glory to God\nin the highest", "DMSerif", "#8C5A3C", "spark", 30, "지극히 높은 곳에서는 하나님께 영광을", "누가복음 2:14"],
+ ["To God be the glory", "Dancing", "#C9577A", "spark", 32, "하나님께 영광이 있기를", "찬송"],
+ ["Praise the Lord", "Shrikhand", "#E07A5F", "spark", 32, "주님을 찬양하라", "시편 150:6"],
+ ["Serve the Lord\nwith gladness", "Dancing", "#4E8A6E", "flower", 32, "기쁨으로 주님을 섬기라", "시편 100:2"],
+ ["Trust in the Lord", "DMSerif", "#3F6FA8", "", 32, "주님을 신뢰하라", "잠언 3:5"],
+ ["Have faith in God", "Pacifico", "#7E63D9", "spark", 28, "하나님을 믿으라", "마가복음 11:22"],
+ ["Faith is a gift\nfrom God", "Dancing", "#C9577A", "heart", 32, "믿음은 하나님이 주신 선물입니다", "신앙 고백"],
+ ["God’s amazing grace", "GVibes", "#B8862E", "spark", 40, "하나님의 놀라운 은혜", "카드 문구"],
+ ["Saved by\nGod’s grace", "DMSerif", "#8C5A3C", "dove", 32, "하나님의 은혜로 구원받았습니다", "에베소서 2:8"],
+ ["By grace,\nthrough faith", "Dancing", "#3F6FA8", "", 34, "은혜로, 믿음을 통하여", "에베소서 2:8"],
+ ["God is love", "Pacifico", "#E05780", "heart", 34, "하나님은 사랑이십니다", "요한일서 4:8"],
+ ["The Lord\nis my shepherd", "DMSerif", "#4E8A6E", "", 32, "주님은 나의 목자이십니다", "시편 23:1"],
+ ["God is our refuge\nand strength", "DMSerif", "#5B4A8A", "", 28, "하나님은 우리의 피난처이시며 힘이십니다", "시편 46:1"],
+ ["My help comes\nfrom the Lord", "Dancing", "#3F6FA8", "dove", 32, "나의 도움은 주님에게서 옵니다", "시편 121:2"],
+ ["The Lord\ngives me rest", "Pacifico", "#4E8A6E", "wave", 28, "주님이 나를 쉬게 하십니다", "마태복음 11:28"],
+ ["Jesus is\nwith me always", "GVibes", "#C9577A", "heart", 40, "예수님은 언제나 나와 함께하십니다", "마태복음 28:20"],
+ ["The Lord is good", "Shrikhand", "#B8862E", "sun", 30, "주님은 선하십니다", "시편 100:5"],
+ ["Give thanks\nto the Lord", "Pacifico", "#E07A5F", "flower", 28, "주님께 감사하라", "시편 118:1"],
+ ["Rejoice in\nthe Lord always", "Dancing", "#E05780", "spark", 32, "주님 안에서 언제나 기뻐하라", "빌립보서 4:4"]]
+ .forEach(([t,f,c,dc,sz,mean,ref])=>L.push({g:'word',vs:1,n:t.replace(/\n/g,' '),t,f,c,dc,sz,mean,ref,faith:true}));
+// v35 말씀 텍스트 끝
 /* v1.8 둥근 글씨 5: 글씨를 길(p)을 따라 한 글자씩 캔버스로 그림. c=글씨색(바탕 없는 것), m·tc=바탕색·글씨색(반원 띠)
    p:{a:[가운데x,가운데y,반지름,시작각,끝각]} 원호 / {w:[x0,x1,가운데y,높이,파장]} 물결 / close:1 동그라미(글씨를 둘레에 고르게) */
 const cv=(n,w,h,t,f,sz,ls,p,o={})=>L.push(Object.assign({g:'curve',n,w,h,t,f,sz,ls,p},o));
@@ -1098,7 +1137,7 @@ const TXF=t=>`400 100px "${t.f}", "Jalnan", "Pret"`;
 const TXA={},TXB={};
 function txReady(t){try{if(document.fonts.check(TXF(t),t.t)&&(t.g==='word'||document.fonts.check('400 100px Jalnan','가')))return true;if(t.g!=='word')document.fonts.load('400 100px Jalnan','가').catch(()=>{});document.fonts.load(TXF(t),t.t).then(()=>{draw();if(typeof txThumbs==='function')txThumbs()}).catch(()=>{});return false}catch(_){return true}}
 // 단어 크기(단위): 글씨 폭 + 장식 자리
-function txDim(it){const t=TXS[it.i];if(t.g==='label'||t.g==='curve')return{w:t.w,h:t.h};const x=document.createElement('canvas').getContext('2d');x.font=`400 ${t.sz}px "${t.f}", "Jalnan", "Pret"`;const tw=Math.ceil(x.measureText(t.t).width)+10;return{w:tw+(t.dc?26:0),h:t.sz*1.6,tw}}
+function txDim(it){const t=TXS[it.i];if(t.g==='label'||t.g==='curve')return{w:t.w,h:t.h};const x=document.createElement('canvas').getContext('2d');x.font=`400 ${t.sz}px "${t.f}", "Jalnan", "Pret"`;const ls=String(t.t).split('\n'),tw=Math.ceil(Math.max(...ls.map(q=>x.measureText(q).width)))+10;return{w:tw+(t.dc?26:0),h:t.sz*(1.6+(ls.length-1)*1.2),tw}}   // v35 여러 줄
 function txLines(it){const t=TXS[it.i],v=String(it.txt!=null?it.txt:t.t);return t.g==='curve'?[v.replace(/\n/g,' ')]:v.split('\n').slice(0,3)}
 // 바탕 색과 글씨 색을 따로 고르는 것 (라벨, 반원 띠)
 const txBT=t=>t.g==='label'||(t.g==='curve'&&!!t.m);
@@ -1119,7 +1158,7 @@ function txArt(it){const t=TXS[it.i],lab=t.g==='label',cur=t.g==='curve',bt=txBT
     else{let s=t.sz;x.font=`400 ${s}px "${t.f}", "Jalnan", "Pret"`;const wmax=Math.max(1,...ls.map(q=>x.measureText(q).width));s=Math.min(s,s*mw/wmax,mh/(ls.length*1.08));x.font=`400 ${s}px "${t.f}", "Jalnan", "Pret"`;
       if(t.ow){x.lineJoin='round';x.lineWidth=t.ow*s/44;x.strokeStyle=col;ls.forEach((q,j)=>x.strokeText(q,0,(j-(ls.length-1)/2)*s*1.08+s*.06))}
       ls.forEach((q,j)=>x.fillText(q,0,(j-(ls.length-1)/2)*s*1.08+s*.06))}}
-  else{x.font=`400 ${t.sz}px "${t.f}", "Jalnan", "Pret"`;x.textBaseline='alphabetic';x.fillText(t.t,d.tw/2,t.sz*1.08)}
+  else{x.font=`400 ${t.sz}px "${t.f}", "Jalnan", "Pret"`;x.textBaseline='alphabetic';String(t.t).split('\n').forEach((q,j)=>x.fillText(q,d.tw/2,t.sz*(1.08+j*1.2)))}
   c._cw=d.w*k;c._o=P*k;c.complete=true;c.naturalWidth=cw;c.naturalHeight=ch;c.src='l'+key;
   if(Object.keys(TXA).length>60)for(const q in TXA)delete TXA[q];TXA[key]=c;return c}
 // 고르는 칸의 작은 그림 (글꼴·바탕이 늦게 오면 다시 그림)
@@ -1759,11 +1798,12 @@ function bgPopHtml(){const b=S.bg,seg=S.seg||'color';
   return h}
 /* ---------- v30 [꾸미기] 팝업: 왼쪽 칸 목록 + 오른쪽 5칸 ---------- */
 let DQ=null,DCAT=null,DCJ=0;
-function dcList(){const q=(DQ||'').trim();if(DQ!=null)return q?SH.G.flatMap(([g])=>SH.keys(g)).filter(k=>{const n=SH.nameOf(k);return n.startsWith(q)||n.split(/\s+/).some(w=>w.startsWith(q))}):[];
+function dcList(){const q=(DQ||'').trim();if(DQ!=null)return q?SH.G.flatMap(([g])=>SH.keys(g)).filter(k=>{const n=SH.nameOf(k),ws=n.split(/\s+/);return n.startsWith(q)||q.split(/\s+/).every(p=>ws.some(w=>w.startsWith(p)))}):[];
   return DCAT==='rec'?SH.recent():SH.keys(DCAT)}
-function dcGrid(){const ks=dcList(),g=DQ!=null?'':DCAT,cls=g==='floral'?' w2':['curve','label','word'].includes(g)?' w3':'';
+function dcGrid(){const ks=dcList(),g=DQ!=null?'':DCAT,cls=g==='floral'?' w2':g==='verse'?' wv':['curve','label','word'].includes(g)?' w3':'';
   if(!ks.length)return `<p class="pemp">${DQ!=null?(DQ.trim()?`"${esc(DQ.trim())}"에 맞는 꾸미기가 없어요`:'이름을 써 보세요 (예: 하트, 양, 십자가)'):'아직 넣은 것이 없어요'}</p>`;
-  return (DCAT==='rec'&&DQ==null?`<button class="prc" data-rclr="1">모두 지우기</button>`:'')+`<div class="pdg${cls}">${ks.map(k=>SH.btn(k)).join('')}</div>`}
+  const sub=DQ==null&&DCAT!=='rec'&&new Set(ks.map(SH.styOf)).size>1;let last=null;
+  return (DCAT==='rec'&&DQ==null?`<button class="prc" data-rclr="1">모두 지우기</button>`:'')+`<div class="pdg${cls}">${ks.map(k=>{let h='';if(sub){const s=SH.styOf(k);if(s!==last){h=`<p class="psub">${esc(s)}</p>`;last=s}}return h+SH.btn(k)}).join('')}</div>`}
 function dcPopHtml(){if(DCAT==null)DCAT=SH.recent().length?'rec':'ic';if(DCAT==='rec'&&!SH.recent().length&&DQ==null)DCAT='ic';
   const head=DQ!=null?`<div class="pdh"><span class="psi">${cic('srch')}</span><input id="dcq" placeholder="이름으로 찾기 (예: 하트, 양)" autocomplete="off" enterkeyhint="search" aria-label="꾸미기 찾기"><button class="psx" data-dqx="1" aria-label="찾기 닫기">✕</button></div>`
     :`<div class="pdh"><button class="psb" data-dq="1">${cic('srch')}스티커 찾기</button></div>`;
@@ -1777,7 +1817,7 @@ $('popb').addEventListener('click',e=>{if(POP!=='tdc')return;const g=e.target.cl
   if(d.sk){DQ=null;SH.add(d.sk)}});
 window.addEventListener('resize',popPlace);
 function addText(){const n=S.texts.length;if(n>=MAXT){toast('글씨는 '+MAXT+'개까지 넣을 수 있어요');return}const last=S.texts[S.tsel]||S.texts[n-1];
-  S.texts.push({s:'',f:last?last.f:0,size:last?last.size:22,al:'center',col:last?last.col:'#FFFFFF',cx:.5,cy:[.5,.3,.7,.15,.85][n%5],sh:1,ls:last?last.ls||0:0});S.isel=null;S.sel=null;S.tsel=n;S.tab='tx';POP=null;panel();draw();openEd()}
+  S.texts.push({s:'',f:last?last.f:0,size:last?last.size:22,al:'center',col:last?last.col:(S.mode==='card'?'#4A3F33':'#FFFFFF'),cx:.5,cy:[.5,.3,.7,.15,.85][n%5],sh:last?(last.sh||0):0,ls:last?last.ls||0:0});S.isel=null;S.sel=null;S.tsel=n;S.tab='tx';POP=null;panel();draw();openEd()}
 function tabs(){[...$('tabs').children].forEach(b=>b.classList.toggle('on',((PN||SH.k)&&b.dataset.t===S.tab)||(!!POP&&POP==='t'+b.dataset.t)))}
 $('tabs').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;if(S.editing)closeEd();const t=b.dataset.t;
   if(t==='bg'||t==='tx'||t==='dc'){if(SH.k)SH.closeNow();if(PN)pnClose();S.isel=null;S.tsel=null;S.sel=null;   /* v30: 도구 칸을 열지 않음 → 카드 크기 그대로 */
@@ -1820,14 +1860,18 @@ function zmove(o,A){const L=zlist(),k=L.findIndex(e=>(e.t||e.it)===o),n=L.length
 // 칸 안 순서: 새 구분선·도구(first)를 앞에
 /* ---------- v1.8 꾸미기 시트: 검색 · 최근 쓴 것 · 칸마다 한 줄 + 모두 보기(5칸) ----------
    k: 0 닫힘, 1 절반(카드는 시트 위로 작아짐), 2 전체. 폰 뒤로 버튼: 모두 보기 → 목록 → 닫힘 (history.state.sh) */
-const SH=(()=>{const G=[['ic','아이콘'],['frm','프레임'],['deco','선·밑줄'],['floral','꽃 장식'],['tool','종이·테이프'],['shape','모양'],['heart','하트'],['smile','스마일'],['char','캐릭터'],['sheep','양'],['people','사람'],['bible','믿음'],['nature','자연'],['country','전원'],['botline','보타니컬 선'],['props','소품'],['season','기념일'],['xmas','성탄'],['winter','겨울'],['line','라인아트'],['curve','둥근 글씨'],['label','라벨'],['word','단어']];
+const SH=(()=>{const G=[['ic','아이콘'],['heart','하트'],['shape','모양'],['deco','선·구분선'],['tool','종이·테이프'],['frm','프레임'],['flower','꽃·식물'],['sky','하늘·풍경'],['animal','동물'],['face','얼굴'],['people','사람'],['bible','믿음'],['props','소품'],['season','기념일'],['xmas','성탄·겨울'],['curve','둥근 글씨'],['label','라벨'],['word','단어'],['verse','말씀 텍스트']];
   const RK='ttukttak-card-recentstk',o={k:0,view:null};let qt=0;
   const HIC=[3,4,5,6];   // v34 아이콘 하트(heart·heart-filled·heart-handshake·message-heart)는 하트 칸으로
-  const keys=g=>g==='ic'?D.icons.map((t,i)=>t.del||HIC.includes(i)?null:'i'+i).filter(Boolean).concat(stkOrder('ic').map(i=>'s'+i)):g==='heart'?HIC.filter(i=>D.icons[i]&&!D.icons[i].del).map(i=>'i'+i).concat(stkOrder('heart').map(i=>'s'+i)):['curve','label','word'].includes(g)?TXS.map((t,i)=>t.g===g?'l'+i:null).filter(Boolean):stkOrder(g).map(i=>'s'+i);
-  const nameOf=k=>{const i=+k.slice(1);return k[0]==='i'?D.icons[i].n:k[0]==='l'?(TXS[i].g==='word'?TXS[i].t+' '+TXS[i].mean:TXS[i].n):STK[i].n};
+  const keys=g=>g==='ic'?D.icons.map((t,i)=>t.del||HIC.includes(i)?null:'i'+i).filter(Boolean).concat(catOrder('ic').map(i=>'s'+i)):g==='heart'?catOrder('heart').map(i=>'s'+i).concat(HIC.filter(i=>D.icons[i]&&!D.icons[i].del).map(i=>'i'+i)):g==='verse'?TXS.map((t,i)=>t.g==='word'&&t.vs?'l'+i:null).filter(Boolean):['curve','label','word'].includes(g)?TXS.map((t,i)=>t.g===g&&!t.vs?'l'+i:null).filter(Boolean):catOrder(g).map(i=>'s'+i);
+  const catOf=k=>{const i=+k.slice(1);return k[0]==='i'?(HIC.includes(i)?'heart':'ic'):k[0]==='l'?(TXS[i].vs?'verse':TXS[i].g):STK[i].cat};
+  const styOf=k=>k[0]==='i'?'선 그림':k[0]==='l'?'':STK[+k.slice(1)].sty||'';
+  const KO={"bible": "성경", "cross": "십자가", "building-church": "교회", "heart": "하트", "heart-filled": "채운 하트", "heart-handshake": "하트 악수", "message-heart": "하트 말풍선", "crown": "왕관", "sparkles": "반짝이", "book": "책", "notes": "메모 노트", "sunrise": "해돋이", "sun": "해", "moon": "달", "seedling": "새싹", "fish": "물고기", "music": "음표 음악", "flower": "꽃", "plant": "화분 식물", "plant-2": "식물 화분", "leaf": "잎", "clover": "클로버", "butterfly": "나비", "feather": "깃털", "cherry": "체리", "cloud": "구름", "rainbow": "무지개", "pinned": "압정", "bookmark": "책갈피", "dove": "비둘기", "Merry Christmas": "메리 크리스마스 영문"};   // v35 영어 이름 → 한글도 (검색용)
+  const ko=n=>KO[n]?KO[n]+' '+n:n;
+  const nameOf=k=>{const i=+k.slice(1);return k[0]==='i'?ko(D.icons[i].n):k[0]==='l'?(TXS[i].g==='word'?TXS[i].n+' '+TXS[i].mean+(TXS[i].ref?' '+TXS[i].ref:''):TXS[i].n):ko(STK[i].n)};
   o.btn=(k,at='data-sk')=>{const i=+k.slice(1),c=k[0];let in_;
     if(c==='i')in_=icSvg(i,'currentColor',26).replace(/width="26" height="26"/,'');
-    else if(c==='l'){const w=TXS[i].g==='word';in_=`<canvas data-tth="${i}" width="200" height="${w?60:110}"></canvas>`+(w?`<small>${esc(TXS[i].mean)}</small>`:'');return `<button class="th wide${w?' wd':''}" ${at}="${k}" aria-label="${esc(nameOf(k))}">${in_}</button>`}
+    else if(c==='l'){const w=TXS[i].g==='word',v=w&&TXS[i].vs;in_=`<canvas data-tth="${i}" width="200" height="${v?76:w?60:110}"></canvas>`+(w?`<small>${esc(TXS[i].mean)}</small>`:'');return `<button class="th wide${w?' wd':''}${v?' vs':''}" ${at}="${k}" aria-label="${esc(nameOf(k))}">${in_}</button>`}
     else{const t=STK[i];in_=t.r?`<img src="${t.r}" alt="">`:`<svg viewBox="-4 -4 ${t.w+8} ${t.h+8}">${t.s.replace(/id="([^"]+)"/g,'id="$1_h'+i+'"').replace(/url\(#([^)]+)\)/g,'url(#$1_h'+i+')')}</svg>`}
     return `<button class="th${c==='s'&&STK[i].g==='floral'?' wide':''}" ${at}="${k}" aria-label="${esc(nameOf(k))}">${in_}</button>`};   // 꽃 구분선은 가로로 긴 그림이라 넓은 칸
   o.recent=()=>{try{const r=JSON.parse(localStorage.getItem(RK)||'[]');return Array.isArray(r)?r.filter(k=>{const i=+k.slice(1);return alive({k:k[0]==='i'?undefined:k[0],i})}).slice(0,12):[]}catch(_){return[]}};
@@ -1878,8 +1922,10 @@ const SH=(()=>{const G=[['ic','아이콘'],['frm','프레임'],['deco','선·밑
     window.addEventListener('resize',()=>{if(o.k)place(o.k)});
     E().addEventListener('scroll',()=>{if(E().scrollTop)E().scrollTop=0});   // 숨은 시트 쪽으로 화면이 밀리지 않게 (입력칸 포커스 등)
   },0);
-  o.G=G;o.keys=keys;o.nameOf=nameOf;
+  o.G=G;o.keys=keys;o.nameOf=nameOf;o.catOf=catOf;o.styOf=styOf;
   return o})();
+const STYO=['선·밑줄','꽃 구분선','그림','동화 그림','수채','클래식 그림','선 그림','사진','종이·질감'];   // v35 칸 안 작은 제목 순서
+const catOrder=c=>STK.map((t,i)=>i).filter(i=>STK[i].cat===c&&!STK[i].del).sort((a,b)=>STYO.indexOf(STK[a].sty)-STYO.indexOf(STK[b].sty)||(STK[b].first||STK[b].pin||0)-(STK[a].first||STK[a].pin||0)||a-b);
 const stkOrder=g=>STK.map((t,i)=>i).filter(i=>STK[i].g===g).sort((a,b)=>(STK[b].first||STK[b].pin||0)-(STK[a].first||STK[a].pin||0)||a-b);
 const SCRL={},skey=(el,i)=>{const b=el.querySelector('button,canvas');const a=b?([...b.attributes].map(x=>x.name).find(n=>n.startsWith('data-'))||''):'';return i+'|'+a+'|'+(el.dataset.gk||'')};
 function panel(){const P=$('panel');let h='';if(P._t)P.querySelectorAll('.strip,.igrid').forEach((el,i)=>SCRL[P._t+skey(el,i)]=el.classList.contains('igrid')?el.scrollTop:el.scrollLeft);const sy=$('scr').scrollTop;
@@ -2078,7 +2124,7 @@ $('pvb').onclick=async()=>{if(S.editing)closeEd();let txt='';try{if(navigator.cl
   if(txt&&pvParse(txt))pvApply(txt);else pvBox(txt)};
 
 /* ========== 앱(PWA): 설치 · 업데이트 · 자동 저장 · 최근 작업 ========== */
-const APP_V='34',NOTES="새 스티커 64개가 들어왔어요!\n· 하트 칸이 새로 생겼어요: 새 하트 12개 + 여기저기 있던 하트를 한곳에 모았어요\n· 아이콘: 선 아이콘 12개(편지·전화·티켓·마이크·성경·기도손·비둘기·촛불·교회 등)\n· 라인아트: 인물 25개 · 캐릭터: 동물 11개 · 양: 복슬 아기 양 · 사람: 신랑 신부 3개",LSK='ttukttak-card';
+const APP_V='35',NOTES="꾸미기가 찾기 쉬워졌어요!\n· 칸을 주제별로 다시 정리했어요 (꽃·식물, 하늘·풍경, 동물, 얼굴, 사람 …). 칸 안은 그림체별로 작은 제목이 붙어요\n· 새 칸 '말씀 텍스트': 영어 말씀 20개 (한글 해석·성경 구절로도 찾을 수 있어요)\n· 새 글씨는 이제 그림자 없이 들어가요\n· 영어 이름 아이콘도 한글로 찾을 수 있어요 (예: 나비, 성경)\n· 잘 안 쓰는 스티커 23개를 정리했어요",LSK='ttukttak-card';
 const UA=navigator.userAgent,isIOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),isSamsung=/SamsungBrowser/i.test(UA);
 const inApp=/KAKAOTALK|NAVER\(|NAVER|Instagram|FBAN|FBAV|Line\/|DaumApps|BAND\/|everytimeApp|KAKAOSTORY/i.test(UA)||(isIOS&&/CriOS|FxiOS|EdgiOS/.test(UA));
 const isFile=location.protocol==='file:',standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
