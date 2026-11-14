@@ -1,5 +1,5 @@
 // 뚝딱카드 서비스워커 — 버전은 build_pwa.py가 넣음
-const CACHE='ttukttak-card-35';
+const CACHE='ttukttak-card-36';
 // v1.7.2: 다른 앱 파일이 이 저장소에 잘못 올라와도 뚝딱카드를 지킴
 //  ① 이 파일 이름(sw-ttukttak.js)은 다른 앱에 없음 → 다른 앱 sw.js가 올라와도 이 서비스워커가 그대로 남음
 //  ② 화면(index.html)을 인터넷에서 받으면 맨 앞의 <meta name="app-id" content="ttukttak-card">를 확인, 없으면 저장해 둔 뚝딱카드로 엶

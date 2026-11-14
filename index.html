@@ -81,7 +81,10 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .big svg{width:52px;height:52px;flex:none}
 .big b{display:block;font-size:19px;font-weight:600}.big small{font-size:12.5px;opacity:.8}
 .big.c1{background:#F9D3DD;color:#8E3555}.big.c2{background:#FFE3C9;color:#9A5530}
-.recent{margin-top:26px;padding-bottom:max(24px,env(safe-area-inset-bottom,0px))}
+.recent{margin-top:26px;padding-bottom:6px}
+.tpio{margin:18px 2px 8px;text-align:center}.tpio p{font-size:12px;color:var(--faint);margin:0 0 8px;word-break:keep-all}.tpio div{display:flex;gap:8px;justify-content:center}
+.tpio button{white-space:nowrap;flex:0 0 auto;width:auto;border:1px solid var(--line,#E6D9D4);background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;color:var(--deep);font-weight:600}
+.ver{margin:14px 0 0;padding-bottom:max(18px,env(safe-area-inset-bottom,0px));text-align:center;font-size:11px;color:var(--faint);letter-spacing:.02em}
 .recent .h{display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:var(--sub);margin-bottom:8px}
 .recent .h span:last-child{font-weight:400;color:var(--faint)}
 .rlist{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}.rlist::-webkit-scrollbar{display:none}
@@ -332,6 +335,7 @@ textarea{width:100%;box-sizing:border-box;border:1px solid #E9CDD5;background:#f
   <button class="big c2" id="goCol"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="6" width="30" height="28" rx="4" fill="#fff" stroke="currentColor" stroke-width="2"/><path d="M20 6v28M20 20h15" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="15" r="2.5" fill="currentColor"/><path d="M7 30l6-7 5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg><span><b>사진 콜라주</b><small>사진 1~5장</small></span></button>
   <button class="big c3" id="goTpl"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="5" width="13" height="16" rx="3" fill="#fff" stroke="currentColor" stroke-width="2"/><rect x="22" y="5" width="13" height="10" rx="3" fill="#fff" stroke="currentColor" stroke-width="2"/><rect x="5" y="25" width="13" height="10" rx="3" fill="#fff" stroke="currentColor" stroke-width="2"/><rect x="22" y="19" width="13" height="16" rx="3" fill="#fff" stroke="currentColor" stroke-width="2"/></svg><span><b>템플릿으로 시작</b><small>예쁜 판에 글씨만 바꾸기</small></span></button>
   <div class="recent"><div class="h"><span>최근 작업</span><span id="recN"></span></div><div id="rec"></div></div>
+  <p class="ver" id="verL"></p>
 </div>
 
 <!-- 콜라주 편집 -->
@@ -341,6 +345,7 @@ textarea{width:100%;box-sizing:border-box;border:1px solid #E9CDD5;background:#f
     <button class="icb" id="back" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M5 12l6 6M5 12l6-6"/></svg></button>
     <span class="ratio"><span id="rl"></span> ▾<select id="rs" aria-label="크기"></select></span><button class="lkb" id="lkb" hidden></button>
     <span class="sp"></span>
+    <button class="icb" id="myTplBtn" aria-label="내 템플릿으로 저장"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg></button>
     <button class="icl" id="shareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M18 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M8.7 10.7l6.6 -3.4"/><path d="M8.7 13.3l6.6 3.4"/></svg>공유</button>
     <button class="save" id="saveBtn">저장</button>
   </div>
@@ -1176,7 +1181,7 @@ function txInk(a){if(a._ib)return a._ib;const w=a.width,h=a.height,d=a.getContex
          ro='main' 본문 / 'ref' 출처 / 'en' 영문 책 이름 → [말씀 붙여넣기]가 채우는 칸
    도형(shapes: line·rect·circle·glyph·grad·arch)은 글씨 아래에 깔리고 누를 수 없음. 장식 u:1 = 글씨 아래에 깔림
    폴더: TCATS에 [키,이름] 한 줄을 더하고 템플릿에 cat:'키'를 달면 됨 */
-const TCATS=[['word','말씀']];
+const TCATS=[['word','말씀'],['inv','초대장'],['xmas','성탄 카드']];
 const BOOKEN={'창세기':'Genesis','출애굽기':'Exodus','레위기':'Leviticus','민수기':'Numbers','신명기':'Deuteronomy','여호수아':'Joshua','사사기':'Judges','룻기':'Ruth','사무엘상':'1 Samuel','사무엘하':'2 Samuel','열왕기상':'1 Kings','열왕기하':'2 Kings','역대상':'1 Chronicles','역대하':'2 Chronicles','에스라':'Ezra','느헤미야':'Nehemiah','에스더':'Esther','욥기':'Job','시편':'Psalm','잠언':'Proverbs','전도서':'Ecclesiastes','아가':'Song of Songs','이사야':'Isaiah','예레미야':'Jeremiah','예레미야애가':'Lamentations','에스겔':'Ezekiel','다니엘':'Daniel','호세아':'Hosea','요엘':'Joel','아모스':'Amos','오바댜':'Obadiah','요나':'Jonah','미가':'Micah','나훔':'Nahum','하박국':'Habakkuk','스바냐':'Zephaniah','학개':'Haggai','스가랴':'Zechariah','말라기':'Malachi',
  '마태복음':'Matthew','마가복음':'Mark','누가복음':'Luke','요한복음':'John','사도행전':'Acts','로마서':'Romans','고린도전서':'1 Corinthians','고린도후서':'2 Corinthians','갈라디아서':'Galatians','에베소서':'Ephesians','빌립보서':'Philippians','골로새서':'Colossians','데살로니가전서':'1 Thessalonians','데살로니가후서':'2 Thessalonians','디모데전서':'1 Timothy','디모데후서':'2 Timothy','디도서':'Titus','빌레몬서':'Philemon','히브리서':'Hebrews','야고보서':'James','베드로전서':'1 Peter','베드로후서':'2 Peter','요한일서':'1 John','요한이서':'2 John','요한삼서':'3 John','요한1서':'1 John','요한2서':'2 John','요한3서':'3 John','유다서':'Jude','요한계시록':'Revelation'};
 const TPLS=(()=>{
@@ -1256,6 +1261,124 @@ T({id:'w75',name:'튤립',v:['내게 능력 주시는 자 안에서 내가 모�
  shapes:[fr(.055,'#E3B1BC',.0024),fr(.072,'#E3B1BC',.0011),ln(.46,.175,.54,.175,'#E3B1BC')],
  texts:[cap(.14,'#B0607A'),main({f:3,size:13,col:'#5A2E3A',vb:.5,bw:.6,bh:.27}),ref({f:3,ls:.04,col:'#B0607A',cy:.545})],
  items:[st('튤립',.5,.76,.4)]});
+// v35 템플릿 시작 (src/add35_tpl.py)
+const TI=n=>TXS.findIndex(t=>t.n===n);
+const tl=(n,x,y,w,o={})=>Object.assign({k:'l',i:TI(n),x,y,w,col:null,r:0},o);
+const ic=(i,x,y,w,col)=>({k:'i',i,x,y,w,col,r:0});
+// 2차(사용자: "디테일 부족 · 꽃 하나만 크게 · 글씨 배치가 비어 보임") — 꽃은 3~4개를 겹쳐 무리로, 제목 아래 장식 구분선, 일시·장소는 색 이름표, 교회 이름 옆 선 아이콘, 두 줄 테·꺾쇠
+const P=(...ps)=>ps.reduce((a,p)=>({shapes:a.shapes.concat(p.shapes||[]),texts:a.texts.concat(p.texts||[]),items:a.items.concat(p.items||[])}),{shapes:[],texts:[],items:[]});
+const info=(rows,y0,dy,pc,vc,o={})=>{const x0=o.x0||.22,pw=o.pw||.11,ph=o.ph||.03,f=o.f==null?14:o.f;return {shapes:rows.map(([l],k)=>({t:'rect',x:x0,y:y0+k*dy-ph/2,w:pw,h:ph,r:.03,col:pc})),
+ texts:rows.flatMap(([l,v],k)=>[tx({s:l,f:14,size:o.ls||8,ls:.06,col:'#FFFFFF',cx:x0+pw/2,cy:y0+k*dy}),tx({s:v,f,size:o.vs||9.5,al:'left',col:vc,cx:x0+pw+.035+.23,cy:y0+k*dy,bw:.46})])}};
+const foot=(name,cy,col,o={})=>({items:[st(o.ic||'선 교회',o.ix||.39,cy,o.iw||.045,{col})],texts:[tx({s:name,f:o.f==null?16:o.f,size:o.size||12,ls:.04,col,cx:o.tx||.53,cy})]});
+const IV=o=>{const q=o.p||{};delete o.p;L.push(Object.assign({cat:'inv',mode:'card',size:'5:7'},o,{shapes:(o.shapes||[]).concat(q.shapes||[]),texts:(o.texts||[]).concat(q.texts||[]),items:(o.items||[]).concat(q.items||[])}))};
+// ---- 남긴 것(사용자 2026-11-14: 초대장 2·3·4·7, 말씀 4) ----
+IV({id:'i02',name:'금테 · 임직 감사예배',bg:{t:'pat',c:18,p:'리넨',hx:'#DCE6EF'},
+ shapes:[{t:'rect',x:.09,y:.07,w:.82,h:.86,col:'#FFFFFF'},{t:'rect',x:.115,y:.09,w:.77,h:.82,stroke:'#C9A45C',lw:.0022},{t:'rect',x:.13,y:.1,w:.74,h:.8,stroke:'#C9A45C',lw:.001},
+  ln(.3,.58,.42,.58,'#7D9A6E',.0016),ln(.58,.58,.7,.58,'#7D9A6E',.0016),ln(.3,.63,.42,.63,'#7D9A6E',.0016),ln(.58,.63,.7,.63,'#7D9A6E',.0016)],
+ p:P({items:[st('흰 꽃 가지',.33,.06,.12,{r:1.3}),st('수채 라일락 모서리',.19,.12,.36),st('분홍 꽃 가지',.06,.3,.1,{r:-1.2}),
+   st('초록 열매 가지',.62,.95,.11,{r:2}),st('수채 흰 꽃 모서리',.8,.88,.36,{r:Math.PI}),st('분홍 꽃 가지',.94,.7,.1,{r:1.6}),st('흰 꽃 두 송이',.5,.405,.09)],
+  texts:[tx({s:'Invitation',f:13,size:16,col:'#B0607A',cy:.19}),tx({s:'초대합니다',f:17,size:28,ls:.04,col:'#6E4032',cy:.255}),tx({s:'임직 감사예배',f:3,size:12,ls:.06,col:'#7A5FA0',cy:.32}),
+   tx({s:'부르심에 순종하여 직분을 받는\n귀한 자리에 초대합니다',f:0,size:8.6,lh:1.9,col:'#6E625A',cy:.47}),
+   tx({s:'May',f:9,size:10,col:'#4E7A5E',cy:.548}),tx({s:'15',f:9,size:30,col:'#4E7A5E',cy:.605}),tx({s:'Sunday',f:9,size:9,col:'#4E7A5E',cx:.36,cy:.605}),tx({s:'pm 03:00',f:9,size:9,col:'#4E7A5E',cx:.64,cy:.605}),tx({s:'2027',f:9,size:10,col:'#4E7A5E',cy:.66}),
+   tx({s:'○○교회 본당',f:16,size:11,col:'#4A3A32',cy:.725})]},foot('○○교회',.79,'#6E4032',{size:11,f:14}))});
+IV({id:'i03',name:'네이비 클래식',bg:{t:'pat',c:9,p:'리넨'},
+ shapes:[{t:'rect',x:.045,y:.035,w:.91,h:.93,stroke:'#EDE6D6',lw:.0022},{t:'rect',x:.06,y:.046,w:.88,h:.908,stroke:'#EDE6D6',lw:.0008},...brk(.085,.05,'#D9C38E'),ln(.42,.455,.58,.455,'#D9C38E',.0016),
+  dot(.2,.26,.003,'#E9D9A8'),dot(.82,.3,.004,'#E9D9A8'),dot(.15,.6,.003,'#E9D9A8'),dot(.86,.66,.003,'#E9D9A8'),dot(.3,.73,.0025,'#E9D9A8'),dot(.72,.22,.0025,'#E9D9A8')],
+ texts:[tx({s:'Christmas Concert',f:13,size:15,col:'#E3CC92',cy:.275}),tx({s:'INVITATION',f:9,size:27,ls:.06,col:'#F4EEE2',cy:.335}),tx({s:'성탄 축하 음악회',f:16,size:13,ls:.06,col:'#E3CC92',cy:.405}),
+  tx({s:'잔잔한 찬양과 말씀으로\n한 해를 함께 감사해요',f:0,size:9.5,lh:1.9,col:'#D8DCEA',cy:.52}),
+  tx({s:'2027. 12. 19 SUN  PM 4:00',f:9,size:10,ls:.06,col:'#F4EEE2',cy:.615}),tx({s:'○○교회 비전홀',f:14,size:9.5,ls:.04,col:'#D8DCEA',cy:.655}),tx({s:'○○교회 찬양대',f:14,size:8.5,ls:.1,col:'#B9A777',cy:.72})],
+ items:[st('반짝 큰 별',.5,.12,.07),st('소용돌이 선',.5,.19,.6,{col:'#EADCB8'}),st('소용돌이 선',.5,.83,.6,{col:'#EADCB8',fy:1})]});
+IV({id:'i04',name:'라인아트 · 결혼',bg:{t:'pat',c:28,p:'코튼지'},
+ shapes:[{t:'rect',x:.05,y:.036,w:.9,h:.928,stroke:'#2E2A2A',lw:.0012},ln(.14,.355,.29,.355,'#6E6660',.0012),ln(.71,.355,.86,.355,'#6E6660',.0012)],
+ texts:[tx({s:'THE WEDDING OF',f:9,size:9,ls:.22,col:'#2E2A2A',cy:.1}),tx({s:'Minjun\n&\nSeoyeon',f:9,size:24,lh:1.05,col:'#2E2A2A',cy:.22}),
+  tx({s:'2027. 5. 15  SAT  12:30',f:9,size:8.5,ls:.1,col:'#6E6660',cy:.355}),tx({s:'서로의 손을 잡고 새 출발을 하려 합니다\n귀한 걸음으로 축복해 주세요',f:1,size:8.8,lh:1.9,col:'#4A4440',cy:.43}),
+  tx({s:'신랑 김민준   ·   신부 이서연',f:1,size:10,ls:.04,col:'#2E2A2A',cy:.885}),tx({s:'○○웨딩홀 3층 그랜드홀',f:14,size:8,ls:.06,col:'#6E6660',cy:.92})],
+ items:[st('잔잎 가지 선',.2,.22,.08,{col:'#2E2A2A',r:-.35}),st('잔잎 가지 선',.8,.22,.08,{col:'#2E2A2A',r:.35,fx:1}),st('신랑신부',.5,.68,.46,{col:'#2E2A2A'}),st('한 줄 하트',.5,.795,.06,{col:'#2E2A2A'})]});
+IV({id:'i07',name:'가을 · 추수감사',size:'4:5',bg:{t:'pat',c:27,p:'코튼지'},
+ shapes:[ln(.38,.5,.48,.5,'#C27A55')],
+ p:P({items:[st('마른 꽃봉오리',.4,.07,.12,{r:.7}),st('단풍잎과 밤',.19,.17,.32,{r:-.35}),st('올리브 잎',.07,.36,.13,{r:-.9}),
+   st('단풍잎과 밤',.66,.93,.14,{r:.7}),st('사과꽃 가지',.86,.88,.3,{r:2.6}),st('마른 꽃봉오리',.95,.7,.09,{r:-2.6})],
+  texts:[tx({s:'Thanksgiving',f:13,size:19,al:'left',col:'#B5654A',cx:.63,cy:.31,bw:.5}),tx({s:'추수감사 예배\n초대합니다',f:17,size:20,lh:1.4,al:'left',col:'#8A4A30',cx:.63,cy:.41,bw:.5}),
+   tx({s:'한 해 동안 베푸신 은혜에\n감사의 예배를 드립니다',f:0,size:8.6,lh:1.9,al:'left',col:'#6E5A4A',cx:.63,cy:.56,bw:.5})]},
+  info([['일시','2027. 11. 21 (주일) 오전 11시'],['장소','○○교회 본당']],.65,.048,'#C27A55','#5C4636',{x0:.38,pw:.1,vs:8.6}),foot('○○교회',.76,'#8A4A30',{ix:.4,tx:.52,size:11}))});
+T({id:'w83',name:'네이비 · 금빛 원',v:['하나님은 우리의 피난처시요 힘이시니 환난 중에 만날 큰 도움이시라','시편 46:1','PSALM 46'],bg:{t:'pat',c:9,p:'리넨'},
+ shapes:[dot(.14,.1,.003,'#E9D9A8'),dot(.86,.12,.004,'#E9D9A8'),dot(.1,.86,.003,'#E9D9A8'),dot(.9,.9,.003,'#E9D9A8'),dot(.5,.06,.0025,'#E9D9A8'),dot(.5,.94,.0025,'#E9D9A8')],
+ texts:[tx({s:'PSALM 46',ro:'en',f:9,size:8,ls:.36,col:'#D9B98C',cy:.33}),main({f:1,col:'#F4EEE2',cy:.5,bw:.52,bh:.2}),ref({f:1,ls:.1,col:'#D9B98C',cy:.665})],
+ items:[st('앤티크 원 프레임',.5,.5,.86,{col:'#D9B98C'})]});
+// ---- 생일 (아이 · 청소년 · 어른) ----
+// ---- 청소년 (3차: 버스킹 "너무 애들 것 같아" → 어두운 공연 포스터 / 팝 축제 정돈) ----
+IV({id:'i09',name:'청소년 · 팝 축제',size:'3:4',bg:{t:'pat',c:27,p:'코튼지',hx:'#F4EFE6'},
+ shapes:[{t:'rect',x:.05,y:.035,w:.9,h:.93,r:.03,stroke:'#2B2B33',lw:.0022},{t:'rect',x:.25,y:.15,w:.5,h:.05,r:.025,col:'#E8447A'},
+  {t:'rect',x:.09,y:.57,w:.26,h:.085,r:.03,col:'#FF8A3D'},{t:'rect',x:.37,y:.57,w:.26,h:.085,r:.03,col:'#3FB4A4'},{t:'rect',x:.65,y:.57,w:.26,h:.085,r:.03,col:'#7E63D9'},
+  {t:'rect',x:.12,y:.69,w:.76,h:.12,r:.03,col:'#FFFFFF'},{t:'rect',x:.12,y:.69,w:.76,h:.12,r:.03,stroke:'#2B2B33',lw:.0014},{t:'rect',x:.22,y:.855,w:.56,h:.06,r:.03,col:'#2B2B33'}],
+ texts:[tx({s:'2027 YOUTH FESTIVAL',f:10,size:9,ls:.2,col:'#2B2B33',cy:.112}),tx({s:'오늘도 우리답게!',f:5,size:11,col:'#FFFFFF',cy:.175}),
+  tx({s:'HELLO\nYOUTH!',f:8,size:46,lh:1.0,ls:.02,col:'#7E4FD9',cy:.36,ol:2,ow:3}),tx({s:'청소년이 직접 만드는 공연·체험·먹거리 한마당',f:18,size:9,col:'#2B2B33',cy:.515}),
+  tx({s:'공연',f:5,size:11,col:'#FFFFFF',cx:.25,cy:.613}),tx({s:'체험',f:5,size:11,col:'#FFFFFF',cx:.53,cy:.613}),tx({s:'먹거리',f:5,size:11,col:'#FFFFFF',cx:.81,cy:.613}),
+  tx({s:'주관  ○○교회 청소년부',f:5,size:9.5,col:'#FFFFFF',cy:.885})],
+ items:[st('체크무늬 띠',.5,.05,.3),st('별표',.14,.12,.1),st('빛살',.86,.13,.11),st('노란 별',.86,.44,.08,{r:.3}),st('별',.13,.44,.07,{r:-.3}),
+  st('선 마이크',.16,.613,.05,{col:'#FFFFFF'}),st('선 티켓',.44,.613,.07,{col:'#FFFFFF'}),st('선 말풍선',.71,.613,.065,{col:'#FFFFFF'})],
+ p:info([['일시','10. 30 (토) 13:00~16:00'],['장소','○○교회 앞마당']],.725,.048,'#E8447A','#2B2B33',{f:18,x0:.2,pw:.12})});
+IV({id:'i10',name:'청소년 · 버스킹 모집',size:'3:4',bg:{t:'pat',c:25,p:'필름 그레인',hx:'#1F3438'},
+ shapes:[{t:'rect',x:.05,y:.035,w:.9,h:.93,stroke:'#F2C14E',lw:.0018},ln(.36,.27,.64,.27,'#F2C14E',.0016),{t:'rect',x:.12,y:.66,w:.76,h:.17,r:.02,stroke:'#F2C14E',lw:.0012}],
+ texts:[tx({s:'OPEN STAGE',f:10,size:9,ls:.34,col:'#F2C14E',cy:.09}),tx({s:'BUSKING',f:10,size:38,ls:.04,col:'#F4EEE2',cy:.16}),
+  tx({s:'청소년 버스킹 모집',f:5,size:16,col:'#F2C14E',cy:.235}),tx({s:'무대는 준비됐어, 네 목소리만 있으면 돼',f:0,size:9,col:'#C9D6D4',cy:.31}),
+  tx({s:'2027. 5. 22 (토) 15:30 · ○○교회 앞마당',f:14,size:8.5,ls:.02,col:'#F4EEE2',cy:.625}),tx({s:'주관  ○○교회 청소년부',f:14,size:8.5,ls:.1,col:'#F2C14E',cy:.9})],
+ items:[st('세 친구',.5,.47,.56,{col:'#F4EEE2'}),st('선 마이크',.15,.2,.06,{col:'#F2C14E',r:-.3}),ic(16,.86,.21,.06,'#F2C14E'),ic(16,.82,.4,.045,'#9FB8B4'),ic(16,.17,.42,.04,'#9FB8B4')],
+ p:info([['대상','중·고등학생 (개인·팀)'],['부문','노래·밴드·댄스·악기'],['신청','5월 15일까지 청소년부실']],.69,.045,'#F2C14E','#F4EEE2',{x0:.17,pw:.11,vs:8.8})});
+
+// 생일 4차(사용자 참고 3장: 글자마다 다른 색 · 물결 테두리 · 이름표 메모 판 · 고깔모자 동물)
+const RB=(w,cy,size,f,cols,dx,o={})=>[...w].map((ch,i,a)=>ch===' '?null:tx({s:ch,f,size,col:cols[i%cols.length],cx:(o.cx||.5)+(i-(a.length-1)/2)*dx,cy:cy+(i%2?1:-1)*(o.j==null?.004:o.j),r:(i%2?1:-1)*(o.r==null?.12:o.r)})).filter(Boolean);
+const scal=(y,r,cols)=>Array.from({length:Math.ceil(1/(2*r))+2},(_,k)=>({t:'circle',x:k*2*r,y,rad:r,col:cols[k%cols.length]}));
+const RAIN=['#F2545B','#F7A531','#F5C930','#5BBF6A','#4AA3E0','#8C6BD8','#F07AB8'];
+IV({id:'b01',name:'생일 · 아이',size:'3:4',bg:{t:'hex',hex:'#FFF3EC'},
+ shapes:[...scal(0,.065,['#F9C7CF','#FBD9C4','#F5B3BF','#FCE1D4']),...scal(1,.065,['#F9C7CF','#FBD9C4','#F5B3BF','#FCE1D4']),
+  {t:'rect',x:.08,y:.17,w:.84,h:.56,r:.05,col:'#FFFFFF'},{t:'rect',x:.08,y:.17,w:.84,h:.56,r:.05,stroke:'#F2A7B8',lw:.0024},{t:'rect',x:.12,y:.148,w:.28,h:.046,r:.023,col:'#F2A7B8'},
+  dot(.86,.2,.006,'#F7C948',1),dot(.2,.79,.005,'#9CD3E8',1),dot(.82,.79,.006,'#F7C948',1)],
+ p:P({texts:[tx({s:'친구들에게',f:18,size:10,col:'#FFFFFF',cx:.26,cy:.171}),...RB('HAPPY',.25,26,8,RAIN,.085),...RB('BIRTHDAY',.315,26,8,RAIN.slice(2).concat(RAIN),.072),
+   tx({s:'서윤이의 일곱 번째 생일 파티에\n친구들을 초대할게!',f:18,size:12,lh:1.6,col:'#4A3A44',cy:.415}),tx({s:'- 서윤이가 -',f:18,size:10.5,col:'#E07A8A',cy:.66})],
+  items:[st('노란 별',.1,.12,.06,{r:-.3}),st('고깔모자',.86,.135,.09,{r:.35}),
+   st('앉은 곰',.2,.865,.25),st('고깔모자',.2,.775,.075,{r:-.25}),st('케이크',.5,.89,.2),st('꽃 든 토끼',.8,.865,.22),st('고깔모자',.79,.795,.07,{r:.3})]},
+  info([['일시','6. 26 (토) 오후 5시'],['장소','○○키즈카페 2층']],.53,.052,'#F2A7B8','#4A3A44',{f:18,x0:.22}))});
+IV({id:'b02',name:'생일 · 청소년',size:'3:4',bg:{t:'pat',c:9,p:'점',hx:'#2C3870'},
+ shapes:[dot(.12,.1,.006,'#F7A531',1),dot(.3,.07,.004,'#F07AB8',1),dot(.7,.08,.005,'#5BBF6A',1),dot(.9,.14,.004,'#4AA3E0',1),dot(.08,.42,.005,'#F5C930',1),dot(.93,.45,.006,'#F2545B',1),
+  dot(.15,.62,.004,'#8C6BD8',1),dot(.88,.66,.005,'#F7A531',1),dot(.5,.035,.003,'#FFFFFF',1),dot(.2,.25,.003,'#FFFFFF',1),dot(.82,.3,.003,'#FFFFFF',1),
+  {t:'rect',x:.12,y:.76,w:.76,h:.15,r:.03,col:'rgba(255,255,255,.1)'}],
+ p:P({texts:[...RB('HAPPY',.13,32,8,RAIN,.1,{r:.1}),...RB('Birthday',.215,32,8,RAIN.slice(3).concat(RAIN),.084,{r:.1}),
+   tx({s:'민준이의 열일곱 번째 생일 파티',f:5,size:12.5,col:'#FFFFFF',cy:.705}),tx({s:'From. 민준',f:18,size:9.5,col:'#F5C930',cy:.94})],
+  items:[st('스마일 웃음',.86,.12,.09,{r:.2}),st('고깔모자',.82,.38,.1,{r:.4}),st('꽃가루 리본',.15,.36,.13),st('별 꽃가루',.86,.56,.12),st('꼬불 선',.13,.56,.05,{r:.5}),
+   st('케이크',.5,.47,.46)]},
+  info([['일시','7. 17 (토) 오후 2시'],['장소','○○노래방 3호실']],.8,.052,'#F07AB8','#FFFFFF',{f:18,x0:.2,pw:.12}))});
+IV({id:'b03',name:'생일 · 어른 (칠순)',bg:{t:'pat',c:23,p:'리넨'},
+ shapes:[{t:'rect',x:.045,y:.035,w:.91,h:.93,stroke:'#D9B98C',lw:.0022},{t:'rect',x:.06,y:.046,w:.88,h:.908,stroke:'#D9B98C',lw:.0008},ln(.44,.485,.56,.485,'#D9B98C',.0016),
+  dot(.2,.08,.003,'#E9D9A8'),dot(.8,.08,.003,'#E9D9A8'),dot(.12,.5,.0025,'#E9D9A8'),dot(.88,.5,.0025,'#E9D9A8')],
+ texts:[tx({s:'Happy Birthday',f:13,size:19,col:'#E3C79E',cy:.33}),tx({s:'김영자 권사님',f:17,size:17,ls:.04,col:'#FBEFF2',cy:.392}),tx({s:'칠순 감사예배에 초대합니다',f:1,size:10.5,ls:.04,col:'#F1DCC7',cy:.442}),
+  tx({s:'건강하게 지켜 주신 하나님께 감사드리며\n귀한 걸음으로 함께해 주세요',f:0,size:8.2,lh:1.9,col:'#E8D3D8',cy:.545}),
+  tx({s:'2027. 9. 4 (토) 낮 12시',f:16,size:10,ls:.04,col:'#F4EEE2',cy:.625}),tx({s:'○○교회 소예배실',f:14,size:9,ls:.04,col:'#E8D3D8',cy:.66}),tx({s:'자녀 일동 올림',f:1,size:9,ls:.1,col:'#D9B98C',cy:.725})],
+ items:[st('앤티크 아치 프레임',.5,.5,1.15,{col:'#D9B98C'}),st('수채 흰 꽃 가로',.5,.9,.42)]});
+// ---- 성탄 카드 ----
+const XC=o=>L.push(Object.assign({cat:'xmas',mode:'card',size:'5:7'},o));
+XC({id:'x01',name:'진초록 · 금빛',bg:{t:'pat',c:25,p:'리넨'},
+ shapes:[{t:'rect',x:.045,y:.035,w:.91,h:.93,stroke:'#D9B98C',lw:.0022},{t:'rect',x:.06,y:.046,w:.88,h:.908,stroke:'#D9B98C',lw:.0008},ln(.44,.545,.56,.545,'#D9B98C',.0016),
+  dot(.18,.28,.003,'#E9D9A8'),dot(.84,.25,.004,'#E9D9A8'),dot(.12,.62,.003,'#E9D9A8'),dot(.9,.7,.003,'#E9D9A8'),dot(.26,.8,.0025,'#E9D9A8'),dot(.76,.82,.0025,'#E9D9A8')],
+ texts:[tx({s:'Merry',f:13,size:40,col:'#E3C79E',cy:.32}),tx({s:'Christmas',f:13,size:40,col:'#E3C79E',cy:.405}),tx({s:'기쁜 성탄 되세요',f:16,size:12,ls:.08,col:'#F4EEE2',cy:.495}),
+  tx({s:'평화의 왕으로 오신 예수님의 사랑이\n가정에 가득하길 기도합니다',f:0,size:9,lh:1.9,col:'#DDE8DD',cy:.62}),tx({s:'From. ○○',f:13,size:16,col:'#E3C79E',cy:.73})],
+ items:[st('솔잎 리본 가지',.5,.13,.62),st('빨간 호랑가시',.14,.9,.1,{r:-.4}),st('리본 금종',.5,.86,.1),st('빨간 호랑가시',.86,.9,.1,{r:.4,fx:1})]});
+XC({id:'x02',name:'빨간 체크 · Joy',size:'4:5',bg:{t:'pat',c:23,p:'체크',hx:'#B8433C'},
+ shapes:[{t:'circle',x:.5,y:.5,rad:.4,col:'#FFF9F2'},{t:'circle',x:.5,y:.5,rad:.382,col:'#C9A45C'},{t:'circle',x:.5,y:.5,rad:.377,col:'#FFF9F2'},ln(.44,.575,.56,.575,'#C9A45C',.0016)],
+ texts:[tx({s:'Joy to the World',f:9,size:19,col:'#8E2A2A',cy:.45}),tx({s:'기쁘다 구주 오셨네',f:16,size:11,ls:.08,col:'#3E5A3A',cy:.525}),
+  tx({s:'온 세상에 오신 기쁨이\n가정마다 가득하길',f:0,size:8.5,lh:1.9,col:'#6E5A4A',cy:.625}),tx({s:'From. ○○',f:13,size:14,col:'#B5483F',cy:.705})],
+ items:[st('별 트리',.5,.3,.15),st('호랑가시 잎',.14,.09,.2,{r:-.5}),st('별 오너먼트',.88,.1,.08),st('리본 금종',.12,.9,.1,{r:-.2}),st('진저브레드',.88,.89,.11,{r:.2})]});
+XC({id:'x03',name:'버건디 · 리스',size:'4:5',bg:{t:'pat',c:23,p:'리넨'},
+ shapes:[{t:'rect',x:.07,y:.055,w:.86,h:.89,r:.02,col:'#FBF4EA'},{t:'rect',x:.085,y:.067,w:.83,h:.866,r:.015,stroke:'#C9A45C',lw:.0016},ln(.44,.64,.56,.64,'#C9A45C',.0016)],
+ texts:[tx({s:'사랑하는 ○○에게\n주님의 평강이 늘 함께하길 바라요',f:1,size:10,lh:1.9,col:'#6E2E3E',cy:.72}),tx({s:'From. ○○',f:13,size:15,col:'#B5483F',cy:.82})],
+ items:[st('호랑가시 잎',.17,.12,.18,{r:-.5}),st('성탄 리스',.5,.27,.32),st('Merry Christmas',.5,.52,.48),st('호랑가시 잎',.83,.88,.18,{r:2.6}),st('별 오너먼트',.86,.14,.07),st('별 오너먼트',.14,.86,.07)]});
+XC({id:'x04',name:'겨울밤 · 고요한 밤',size:'4:5',bg:{t:'hex',hex:'#2B3A5C'},
+ shapes:[{t:'grad',c0:'rgba(20,30,60,0)',c1:'rgba(130,150,200,.38)'},dot(.12,.1),dot(.3,.2,.003),dot(.6,.08,.003),dot(.9,.3),dot(.08,.4,.003),dot(.86,.5,.003),dot(.2,.6),dot(.7,.62,.003),dot(.46,.16,.0025),dot(.94,.66,.0025),
+  ln(.44,.43,.56,.43,'#E3CC92',.0016)],
+ texts:[tx({s:'Silent Night',f:13,size:34,col:'#F4EEE2',cy:.28}),tx({s:'고요한 밤 거룩한 밤',f:16,size:13,ls:.06,col:'#E3CC92',cy:.37}),
+  tx({s:'어둠 속에 오신 빛, 예수님의 평화가\n늘 함께하길 바랍니다',f:0,size:9,lh:1.9,col:'#D8DCEA',cy:.5}),tx({s:'MERRY CHRISTMAS',f:9,size:8.5,ls:.3,col:'#E3CC92',cy:.585})],
+ items:[st('반짝 큰 별',.82,.12,.08),st('눈 덮인 트리',.12,.86,.16),st('눈 덮인 집',.42,.85,.3),st('눈 덮인 트리',.72,.85,.2),st('눈 덮인 트리',.9,.88,.13)]});
+// v35 템플릿 끝
 return L})();
 
 const $=id=>document.getElementById(id);
@@ -1816,6 +1939,9 @@ $('popb').addEventListener('click',e=>{if(POP!=='tdc')return;const g=e.target.cl
   if(d.rclr){SH.delRecent();DCAT='ic';DCJ=1;pop();return}
   if(d.sk){DQ=null;SH.add(d.sk)}});
 window.addEventListener('resize',popPlace);
+function verseText(k,pr){const v=TXS[+k.slice(1)],n=S.texts.length;if(n>=MAXT){toast('글씨는 '+MAXT+'개까지 넣을 수 있어요');return false}   // v36 말씀 텍스트 = 보통 글씨(그 글꼴·색·크기로)
+  const f=Math.max(0,FONTS.findIndex(x=>x[0]===v.f));S.texts.push({s:v.t,f,size:Math.round(v.sz*.62),al:'center',col:v.c,cx:.5,cy:[.3,.5,.7,.2,.8][n%5],sh:0,ls:0});
+  S.isel=null;S.sel=null;S.tsel=n;S.tab='tx';POP=null;tabs();if(pr)pr(k);panel();draw();return true}
 function addText(){const n=S.texts.length;if(n>=MAXT){toast('글씨는 '+MAXT+'개까지 넣을 수 있어요');return}const last=S.texts[S.tsel]||S.texts[n-1];
   S.texts.push({s:'',f:last?last.f:0,size:last?last.size:22,al:'center',col:last?last.col:(S.mode==='card'?'#4A3F33':'#FFFFFF'),cx:.5,cy:[.5,.3,.7,.15,.85][n%5],sh:last?(last.sh||0):0,ls:last?last.ls||0:0});S.isel=null;S.sel=null;S.tsel=n;S.tab='tx';POP=null;panel();draw();openEd()}
 function tabs(){[...$('tabs').children].forEach(b=>b.classList.toggle('on',((PN||SH.k)&&b.dataset.t===S.tab)||(!!POP&&POP==='t'+b.dataset.t)))}
@@ -1895,7 +2021,7 @@ const SH=(()=>{const G=[['ic','아이콘'],['heart','하트'],['shape','모양']
   o.sync=()=>{const l=(history.state&&history.state.sh)||0;if(l<2&&o.view){o.view=null;body()}if(l===0)o.hide()};   // 폰 뒤로 버튼
   o.close=()=>o.closeNow();   // 닫기·넣은 뒤: 시트를 한 번에 닫음
   o.closeNow=()=>{const d=(history.state&&history.state.sh)||0;o.hide();if(d)try{history.go(-d)}catch(_){}};
-  o.add=k=>{if(S.items.length>=MAXI){toast('한 장에 '+MAXI+'개까지 넣을 수 있어요');return false}const i=+k.slice(1),c=k[0];let it;
+  o.add=k=>{if(k[0]==='l'&&TXS[+k.slice(1)].vs)return verseText(k,pushRecent);if(S.items.length>=MAXI){toast('한 장에 '+MAXI+'개까지 넣을 수 있어요');return false}const i=+k.slice(1),c=k[0];let it;
     if(c==='i')it={i,x:.5,y:.5,w:.14,col:S.icol,r:0};
     else if(c==='l')it={k:'l',i,x:.5,y:.5,w:TXS[i].g==='word'?.42:.4,col:null,r:0};
     else{const t=STK[i],big=t.g==='frm'&&!/모서리/.test(t.n);it={k:'s',i,x:.5,y:.5,w:Math.min(big?.84:t.iw||.24,stInsW(i)*(big?1:.85)),col:t.cf?null:S.scol||null,r:0}}
@@ -2074,7 +2200,7 @@ function tplState(T){const n=fresh();Object.assign(n,{mode:T.mode,size:T.size,n:
 function tplFonts(){return Promise.all(FONTS.map(f=>document.fonts.load(fnt(f,20),'가A1')).concat([document.fonts.load('600 12px Pret','1')])).catch(()=>{})}
 let tpOpen=false;
 // 내 템플릿: 최근 작업에서 ☆로 저장 (사진은 빼고 배경·글씨·스티커·도형) · 폰 안(localStorage)에 12개까지
-const MYTMAX=12;
+const MYTMAX=30;   // v36 12 → 30
 function myTpls(){try{return JSON.parse(localStorage.getItem(LSK+'-mytpl')||'[]')}catch(_){return[]}}
 function setMyTpls(l){try{localStorage.setItem(LSK+'-mytpl',JSON.stringify(l));return true}catch(_){toast('저장 공간이 부족해요');return false}}
 async function saveAsTpl(id){let w;try{w=await DB.get(id)}catch(_){}if(!w)return toast('작업을 열 수 없어요');const l=myTpls();if(l.length>=MYTMAX)return toast(`내 템플릿은 ${MYTMAX}개까지예요. 템플릿 화면에서 하나 지워 주세요`);
@@ -2083,13 +2209,24 @@ async function saveAsTpl(id){let w;try{w=await DB.get(id)}catch(_){}if(!w)return
   l.unshift(T);if(setMyTpls(l))toast('내 템플릿에 저장했어요 · [템플릿으로 시작]에서 볼 수 있어요')}
 // v24 템플릿 폴더: 처음엔 폴더 목록(이름·개수·미리보기 3장), 폴더를 누르면 그 안의 템플릿. 폴더는 TCATS(templates.js)에 한 줄 더하면 늘어남
 let tpCat=null;
+// v36 내 템플릿 내보내기·가져오기: 파일 하나(.json)로 다른 폰에 옮기거나 나누기
+function myTplExport(){const l=myTpls();if(!l.length)return toast('내 템플릿이 아직 없어요');const d=new Date(),p=n=>String(n).padStart(2,'0'),nm=`뚝딱카드_내템플릿_${d.getFullYear()%100}${p(d.getMonth()+1)}${p(d.getDate())}.json`;
+  const blob=new Blob([JSON.stringify({app:'ttukttak-card',kind:'mytpl',v:APP_V,list:l})],{type:'application/json'}),file=new File([blob],nm,{type:'application/json'});
+  (async()=>{try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file]});return}}catch(e){if(e&&e.name==='AbortError')return}
+    const a=document.createElement('a');a.download=nm;a.href=URL.createObjectURL(blob);document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('내 템플릿 '+l.length+'개를 파일로 저장했어요')})()}
+function myTplImport(file){const r=new FileReader();r.onload=()=>{let o;try{o=JSON.parse(r.result)}catch(_){}
+  if(!o||o.app!=='ttukttak-card'||o.kind!=='mytpl'||!Array.isArray(o.list))return toast('뚝딱카드 내 템플릿 파일이 아니에요');
+  const l=myTpls(),ids=new Set(l.map(x=>x.id)),add=o.list.filter(x=>x&&x.mine&&Array.isArray(x.texts)&&!ids.has(x.id));if(!add.length)return toast('새로 가져올 템플릿이 없어요(이미 있어요)');
+  const room=MYTMAX-l.length,take=add.slice(0,Math.max(0,room));if(!take.length)return toast(`내 템플릿은 ${MYTMAX}개까지예요. 하나 지운 뒤 가져와 주세요`);
+  if(setMyTpls(take.concat(l))){toast(`${take.length}개 가져왔어요`+(add.length>take.length?` · ${add.length-take.length}개는 자리가 없어 못 가져왔어요`:''));tplBody(null)}};r.readAsText(file)}
 function tpFolders(){const my=myTpls(),F=[];if(my.length)F.push(['my','내 템플릿',my.map((T,i)=>['mt',i,T])]);TCATS.forEach(([k,n])=>{const l=TPLS.map((T,i)=>['tp',i,T]).filter(x=>x[2].cat===k);if(l.length)F.push([k,n,l])});return F}
 function tpThumb(c,T){const keep=S;S=tplState(T);const [W,H]=SZ(),tw=360;c.width=tw;c.height=Math.round(tw*H/W);const x=c.getContext('2d'),go=()=>{const k2=S;S=tplState(T);x.setTransform(tw/W,0,0,tw/W,0,0);render(x,W,H,'thumb');S=k2};x.setTransform(tw/W,0,0,tw/W,0,0);render(x,W,H,'thumb');
   S.items.forEach(it=>{const im=artBase(it);if(im&&im.addEventListener&&!im.complete)im.addEventListener('load',go,{once:true});else if(!im)setTimeout(go,400)});S=keep}
 async function tplBody(cat){const F=tpFolders(),f=cat&&F.find(x=>x[0]===cat);tpCat=f?cat:null;const g=$('tpg');$('tpTitle').textContent=f?`${f[1]} · ${f[2].length}`:'템플릿으로 시작';g.parentNode.scrollTop=0;
-  if(!f)g.innerHTML=F.map(([k,n,l])=>`<button class="tpf" data-cat="${k}" aria-label="${esc(n)} 폴더, ${l.length}개"><span class="p3">${l.slice(0,3).map((x,j)=>`<canvas data-pk="${k}" data-pj="${j}"></canvas>`).join('')}</span><span class="fn"><b>${esc(n)}</b><small>${l.length}개 ›</small></span></button>`).join('')||'<p class="tip">아직 템플릿이 없어요</p>';
+  if(!f)g.innerHTML=F.map(([k,n,l])=>`<button class="tpf" data-cat="${k}" aria-label="${esc(n)} 폴더, ${l.length}개"><span class="p3">${l.slice(0,3).map((x,j)=>`<canvas data-pk="${k}" data-pj="${j}"></canvas>`).join('')}</span><span class="fn"><b>${esc(n)}</b><small>${l.length}개 ›</small></span></button>`).join('')+`<div class="tpio"><p>편집 화면 위 ☆를 누르면 지금 카드가 내 템플릿에 저장돼요</p><div><button data-myx="1">내 템플릿 내보내기</button><button data-myi="1">가져오기</button></div><input type="file" id="myTplFile" accept=".json,application/json" hidden></div>`;
   else g.innerHTML=f[2].map(([kd,i,T])=>kd==='mt'?`<div class="tpw"><button class="tpi" data-mt="${i}"><canvas></canvas>${esc(T.name)}</button><button class="rx" data-mx="${i}" aria-label="내 템플릿 지우기">✕</button></div>`:`<button class="tpi" data-tp="${i}"><canvas></canvas>${esc(T.name)}</button>`).join('');
   g.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>tplBody(b.dataset.cat));
+  {const x=g.querySelector('[data-myx]'),i=g.querySelector('[data-myi]'),fi=$('myTplFile');if(x)x.onclick=myTplExport;if(i&&fi){i.onclick=()=>{fi.value='';fi.click()};fi.onchange=()=>{if(fi.files[0])myTplImport(fi.files[0])}}}
   g.querySelectorAll('[data-tp]').forEach(b=>b.onclick=()=>openTpl(+b.dataset.tp));g.querySelectorAll('[data-mt]').forEach(b=>b.onclick=()=>openTpl(+b.dataset.mt,true));
   g.querySelectorAll('[data-mx]').forEach(b=>b.onclick=()=>ask('이 내 템플릿을 지울까요?','지우기','취소',()=>{const l=myTpls();l.splice(+b.dataset.mx,1);setMyTpls(l);tplBody(l.length?'my':null)}));await tplFonts();if($('tp').hidden)return;
   const my=myTpls();g.querySelectorAll('[data-tp],[data-mt]').forEach(b=>tpThumb(b.querySelector('canvas'),b.dataset.mt!=null?my[+b.dataset.mt]:TPLS[+b.dataset.tp]));
@@ -2124,7 +2261,8 @@ $('pvb').onclick=async()=>{if(S.editing)closeEd();let txt='';try{if(navigator.cl
   if(txt&&pvParse(txt))pvApply(txt);else pvBox(txt)};
 
 /* ========== 앱(PWA): 설치 · 업데이트 · 자동 저장 · 최근 작업 ========== */
-const APP_V='35',NOTES="꾸미기가 찾기 쉬워졌어요!\n· 칸을 주제별로 다시 정리했어요 (꽃·식물, 하늘·풍경, 동물, 얼굴, 사람 …). 칸 안은 그림체별로 작은 제목이 붙어요\n· 새 칸 '말씀 텍스트': 영어 말씀 20개 (한글 해석·성경 구절로도 찾을 수 있어요)\n· 새 글씨는 이제 그림자 없이 들어가요\n· 영어 이름 아이콘도 한글로 찾을 수 있어요 (예: 나비, 성경)\n· 잘 안 쓰는 스티커 23개를 정리했어요",LSK='ttukttak-card';
+const APP_V='36',NOTES="템플릿이 많아졌어요!\n· 새 폴더 '성탄 카드' 4개, 초대장 9개(예배·결혼·추수감사·청소년·생일 아이/청소년/어른), 말씀 1개\n· 편집 화면 위 ☆ = 지금 카드를 내 템플릿으로 저장 (30개까지)\n· 내 템플릿을 파일로 내보내고 가져올 수 있어요 (템플릿 화면 맨 아래)\n· 말씀 텍스트가 이제 보통 글씨로 들어가서 글·글꼴·색을 바꿀 수 있어요\n· 홈 맨 아래에 버전이 보여요",LSK='ttukttak-card';
+document.addEventListener('DOMContentLoaded',()=>{const v=document.getElementById('verL');if(v)v.textContent='뚝딱카드 v'+APP_V});
 const UA=navigator.userAgent,isIOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),isSamsung=/SamsungBrowser/i.test(UA);
 const inApp=/KAKAOTALK|NAVER\(|NAVER|Instagram|FBAN|FBAV|Line\/|DaumApps|BAND\/|everytimeApp|KAKAOSTORY/i.test(UA)||(isIOS&&/CriOS|FxiOS|EdgiOS/.test(UA));
 const isFile=location.protocol==='file:',standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
@@ -2207,6 +2345,7 @@ function doSave(){let inFrame=true;try{inFrame=window.self!==window.top}catch(_)
   if(inFrame){showResult('미리보기 화면에서는 바로 저장이 막혀 있어요. 이미지를 길게 눌러 저장하세요.');return}
   exportCanvas().toBlob(b=>{const a=document.createElement('a');a.download=fname();a.href=URL.createObjectURL(b);document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('저장했어요 · 갤러리의 다운로드 앨범에 있어요')},'image/jpeg',.92)}
 $('shareBtn').onclick=()=>chk(doShare);
+$('myTplBtn').onclick=()=>ask('지금 카드를 내 템플릿으로 저장할까요?<br>사진은 빼고 배경·글씨·스티커만 저장돼요.','저장','취소',async()=>{S._closing=true;try{await saveNow()}catch(_){}S._closing=false;if(!S.id)return toast('조금 고친 뒤 다시 눌러 주세요');saveAsTpl(S.id)});   // v36
 async function doShare(){try{const blob=await new Promise(r=>exportCanvas().toBlob(r,'image/jpeg',.92));const file=new File([blob],fname(),{type:'image/jpeg'});
   if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file]});return}throw 0}catch(e){if(e&&e.name==='AbortError')return;showResult('여기서는 공유창을 열 수 없어요. 이미지를 길게 눌러 저장한 뒤 보내 주세요.')}}
 
