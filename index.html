@@ -328,8 +328,8 @@ textarea{width:100%;box-sizing:border-box;border:1px solid #E9CDD5;background:#f
 </head><body>
 
 <!-- 메인 -->
-<div class="upd" id="upd" hidden>새 버전(<span id="updV"></span>)이 있어요 <button id="updBtn">바꾸기</button></div>
 <div class="scr0" id="main">
+  <div class="upd" id="upd" hidden>새 버전(<span id="updV"></span>)이 있어요 <button id="updBtn">바꾸기</button></div>
   <div class="mtop"><button class="inst" id="inst" hidden>앱 설치</button></div>
   <div class="hero">
     <svg viewBox="0 0 40 24" aria-hidden="true"><path d="M20 12C14 2 4 2 4 10s10 8 16 2zM20 12c6-10 16-10 16-2s-10 8-16 2z" fill="currentColor"/><path d="M18 13l-5 10M22 13l5 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="12" r="3.5" fill="currentColor"/></svg>
@@ -2215,9 +2215,26 @@ function ask(msg,yes,no,onYes){const o=document.createElement('div');o.className
 function openCard(){openCol('card')}
 function openCol(mode){S=fresh();if(mode==='card'){Object.assign(S,{mode:'card',n:0,size:'5:7',tab:'tx',tsel:null});S.bg.c=27;S.texts=[{s:'여호와는 나의 목자시니\n내게 부족함이 없으리로다',f:1,size:11,al:'center',col:'#4A3F33',cx:.5,cy:.42,sh:0,ls:0}];S._init=JSON.stringify(S.texts.map(t=>t.s))}
   showEd(S)}
-function showEd(n){S=n;POP=null;udReset();[...$('tabs').querySelectorAll('[data-t]')].forEach(b=>b.hidden=S.mode==='card'&&(b.dataset.t==='lay'||b.dataset.t==='ph'));thumbSrc=null;BGK='';$('main').hidden=true;$('ed').hidden=false;PN=false;$('scr').hidden=true;try{history.pushState({ed:1},'')}catch(_){}rlabel();tabs();panel();lockUI();requestAnimationFrame(layout)}
-async function closeCol(){if(SH.k)SH.hide();PN=false;$('scr').hidden=true;if(S.editing)closeEd();S._closing=true;try{await saveNow()}catch(_){}S._closing=false;$('ed').hidden=true;$('main').hidden=false;S=fresh();renderRecent()}
-const dirty=()=>S.tpl?S.ph.some(Boolean)||JSON.stringify(S.texts.map(t=>t.s))!==S._init||JSON.stringify(S.items)!==S._initI||!!S.bg.img:S.ph.some(Boolean)||(S.mode==='card'?JSON.stringify(S.texts.map(t=>t.s))!==S._init||!!S.bg.img:S.texts.some(t=>t.s.trim()))||S.items.length>0;
+function showEd(n){S=n;POP=null;udReset();[...$('tabs').querySelectorAll('[data-t]')].forEach(b=>b.hidden=S.mode==='card'&&(b.dataset.t==='lay'||b.dataset.t==='ph'));thumbSrc=null;BGK='';$('main').hidden=true;$('ed').hidden=false;PN=false;$('scr').hidden=true;try{history.pushState({ed:1},'')}catch(_){}rlabel();tabs();panel();lockUI();requestAnimationFrame(()=>{
+  if(S!==n||$('ed').hidden)return;
+  layout();n._snap=snapOf(n);if(n.tpl)n._initI=JSON.stringify(n.items);
+})}
+async function closeCol(){if(SH.k)SH.hide();PN=false;$('scr').hidden=true;if(S.editing)closeEd();S._closing=true;try{await saveNow()}catch(_){}S._closing=false;$('ed').hidden=true;$('main').hidden=false;S=fresh();renderRecent();if(updatePending)reloadForUpdate()}
+function snapOf(s){
+  const {size,n,k,gap,frame,flt,shapes,bg:{img,...bg}}=s;
+  // render()가 vb가 있는 글씨의 cy를 다시 계산한다. z(순서)는 zfix가 빈 것만 채우므로 비교에 넣음(순서 바꾸기도 저장)
+  const clean=(o,autoY=false)=>Object.fromEntries(Object.entries(o).filter(([k])=>
+    !k.startsWith('_')&&!(autoY&&k==='cy')));
+  return JSON.stringify({size,n,k,gap,frame,flt,shapes,bg,ph:s.ph.map(Boolean),lock:s.tpl?!!s.tpl.lock:null,   // 사진 칸 지우기·잠금 바꾸기도 저장
+    texts:s.texts.map(t=>clean(t,t.vb!=null)),items:s.items.map(it=>clean(it))});
+}
+const dirty=()=>{
+  const photo=S.ph.some(Boolean);
+  if(!S.tpl&&S.mode!=='card')return photo||S.texts.some(t=>t.s.trim())||S.items.length>0;
+  const oldItems=S.tpl?JSON.stringify(S.items)!==S._initI:S.items.length>0;
+  return photo||!!S.bg.img||JSON.stringify(S.texts.map(t=>t.s))!==S._init||oldItems||
+    !!(S._snap&&snapOf(S)!==S._snap);
+};
 let leaving=false;
 function goBack(){if(SH.k){SH.closeNow();setTimeout(goBack,80);return}if(history.state&&history.state.pn){pnShow(false);try{history.back()}catch(_){}setTimeout(goBack,80);return}if(history.state&&history.state.ed){leaving=true;history.back()}else closeCol()}
 $('back').onclick=goBack;
@@ -2314,7 +2331,7 @@ $('pvb').onclick=async()=>{if(S.editing)closeEd();let txt='';try{if(navigator.cl
   if(txt&&pvParse(txt))pvApply(txt);else pvBox(txt)};
 
 /* ========== 앱(PWA): 설치 · 업데이트 · 자동 저장 · 최근 작업 ========== */
-const APP_V='37',NOTES="템플릿을 내 것으로 바꿀 수 있어요!\n· 기본 템플릿으로 만든 카드에서 ☆ → [원본과 바꾸기]를 누르면 템플릿 화면의 원래 자리에 들어가요\n· 바꾼 템플릿에는 '내가 바꿈'이 붙고, ↺를 누르면 원래대로 돌아가요\n· 내 템플릿 내보내기 파일에 바꾼 템플릿도 같이 들어가요\n· 새 스티커 24개: 캘리 장식선 7개(선·구분선), 음표 17개(소품). 색을 바꿀 수 있어요",LSK='ttukttak-card';
+const APP_V='38',NOTES="작업 저장이 더 꼼꼼해졌어요\n· 배경색·글꼴·글씨 색·위치만 바꿔도 최근 작업에 저장돼요\n· 마지막 스티커를 지운 것도 저장돼요\n· [바꾸기] 중에 인터넷이 끊겨도 지금 판을 그대로 쓸 수 있어요\n· 카드를 고치는 중에는 새 판으로 바뀌지 않고, 다 고치고 나가면 바뀌어요",LSK='ttukttak-card';
 document.addEventListener('DOMContentLoaded',()=>{const v=document.getElementById('verL');if(v)v.textContent='뚝딱카드 v'+APP_V});
 const UA=navigator.userAgent,isIOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),isSamsung=/SamsungBrowser/i.test(UA);
 const inApp=/KAKAOTALK|NAVER\(|NAVER|Instagram|FBAN|FBAV|Line\/|DaumApps|BAND\/|everytimeApp|KAKAOSTORY/i.test(UA)||(isIOS&&/CriOS|FxiOS|EdgiOS/.test(UA));
@@ -2340,16 +2357,45 @@ $('inst').onclick=async()=>{if(defP){defP.prompt();try{await defP.userChoice}cat
   if(Date.now()-t0<8000){toast('설치 준비 중이에요. 잠시 뒤 다시 눌러 주세요');return}
   sheet('<p><b>크롬에서 설치하기</b></p><p>오른쪽 위 <b>점 세 개(⋮)</b> → <b>\'앱 설치\'</b> 또는 <b>\'홈 화면에 추가\'</b>를 눌러 주세요.</p>')};
 /* 서비스워커 · 업데이트 */
-if('serviceWorker' in navigator&&!isFile){navigator.serviceWorker.register('sw-ttukttak.js').catch(()=>{});let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(rl)return;rl=true;location.reload()})}
+let updatePending=false,updateReloading=false;
+function reloadForUpdate(replace=false){
+  if(updateReloading)return;
+  if(!$('ed').hidden){
+    if(!updatePending)toast('새 판이 준비됐어요 · 편집을 마치면 바뀌어요');
+    updatePending=true;return;
+  }
+  updateReloading=true;
+  if(replace)location.replace(location.pathname+'?v='+Date.now());
+  else location.reload();
+}
+if('serviceWorker' in navigator&&!isFile){
+  navigator.serviceWorker.register('sw-ttukttak.js').catch(()=>{});
+  navigator.serviceWorker.addEventListener('controllerchange',()=>reloadForUpdate());
+}
 let lastChk=0;
 async function checkUpd(){if(isFile)return;lastChk=Date.now();try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'}),j=await r.json();if(j.app!=='ttukttak-card')return;/* 다른 앱 version.json(잘못 올린 파일)은 무시 */if(j.v&&j.v!==APP_V){$('updV').textContent=j.v;$('upd').hidden=false}}catch(_){}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-lastChk>600000)checkUpd()});
 $('updBtn').onclick=async()=>{try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();if(j.app!=='ttukttak-card'){toast('지금 올라온 파일이 뚝딱카드가 아니에요. 그대로 쓸게요');$('upd').hidden=true;return}}catch(_){toast('인터넷 연결을 확인해 주세요');return}
   $('updBtn').disabled=true;$('updBtn').textContent='바꾸는 중…';try{await saveNow()}catch(_){}
-  try{const ks=await caches.keys();await Promise.all(ks.filter(k=>k.startsWith('ttukttak-card-')).map(k=>caches.delete(k)))}catch(_){}  /* 뚝딱카드 캐시만 (같은 주소의 말씀노트 것은 건드리지 않음) */
-  try{const me=new URL('./',location.href).href,rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.filter(r=>r.scope===me).map(r=>r.unregister()))}catch(_){}  /* 내 것만 */
-  for(const u of['./','index.html','sw-ttukttak.js','sw.js','manifest.webmanifest'])try{await fetch(u,{cache:'reload'})}catch(_){}
-  location.replace(location.pathname+'?v='+Date.now())};
+  const reset=msg=>{
+    toast(msg);$('updBtn').disabled=false;$('updBtn').textContent='바꾸기';
+  };
+  let worker;
+  try{
+    const reg=await navigator.serviceWorker?.getRegistration();
+    if(reg){await reg.update();worker=reg.installing||reg.waiting}
+  }catch(_){reset('인터넷 연결을 확인해 주세요');return}
+  if(!worker){reloadForUpdate(true);return}
+  const done=()=>{
+    const state=worker.state;
+    if(state!=='activated'&&state!=='redundant')return;
+    worker.removeEventListener('statechange',done);
+    if(state==='activated')reloadForUpdate();
+    else reset('새 판을 다 받지 못했어요. 지금 판을 그대로 쓸게요');
+  };
+  worker.addEventListener('statechange',done);
+  done();
+};
 async function whatsNew(){const seen=ls.get('seenV');if(seen===APP_V)return;let had=false;if(!seen){try{had=(await DB.all()).length>0}catch(_){}if(!had){ls.set('seenV',APP_V);return}}
   const o=sheet(`<p><b>새 버전으로 바뀌었어요 (${APP_V})</b></p><p style="white-space:pre-line">${NOTES}</p>`);o.addEventListener('click',e=>{if(!o.isConnected)ls.set('seenV',APP_V)})}
 /* 저장소: 작업은 IndexedDB(사진 포함), 설정은 localStorage. 업데이트 때도 지우지 않음 */
